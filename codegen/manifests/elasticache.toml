@@ -1,0 +1,161 @@
+# Amazon ElastiCache manifest — Query/XML protocol
+# Botocore model: elasticache/2015-02-02/service-2.json
+
+[api]
+name = "elasticache"
+display_name = "Amazon ElastiCache"
+version = "v1"
+api_version = "2015-02-02"
+service_name = "elasticache"
+wire_format = "query_xml"
+endpoint_prefix = "elasticache"
+doc_url = "https://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/"
+
+[api.client]
+accessor_name = "elasticache"
+client_struct = "ElasticacheClient"
+
+# === Types ===
+
+# --- Task 10.2 types: DescribeCacheClusters ---
+
+[[types]]
+shape = "DescribeCacheClustersMessage"
+rust_name = "DescribeCacheClustersRequest"
+include_fields = ["CacheClusterId", "MaxRecords", "Marker", "ShowCacheNodeInfo", "ShowCacheClustersNotInReplicationGroups"]
+
+[[types]]
+shape = "CacheClusterMessage"
+rust_name = "DescribeCacheClustersResponse"
+include_fields = ["CacheClusters", "Marker"]
+
+[[types]]
+shape = "CacheCluster"
+include_fields = [
+    "CacheClusterId", "CacheNodeType", "Engine", "EngineVersion",
+    "CacheClusterStatus", "NumCacheNodes", "CacheClusterCreateTime",
+    "PreferredMaintenanceWindow", "PreferredAvailabilityZone",
+    "CacheSubnetGroupName", "AutoMinorVersionUpgrade",
+    "ReplicationGroupId", "SnapshotRetentionLimit", "SnapshotWindow",
+    "AuthTokenEnabled", "TransitEncryptionEnabled", "AtRestEncryptionEnabled",
+    "ARN", "CacheNodes", "ConfigurationEndpoint",
+]
+
+[[types]]
+shape = "CacheNode"
+include_fields = ["CacheNodeId", "CacheNodeStatus", "CacheNodeCreateTime", "Endpoint", "ParameterGroupStatus"]
+
+[[types]]
+shape = "Endpoint"
+include_fields = ["Address", "Port"]
+
+# --- Task 10.2 types: DescribeReplicationGroups ---
+
+[[types]]
+shape = "DescribeReplicationGroupsMessage"
+rust_name = "DescribeReplicationGroupsRequest"
+include_fields = ["ReplicationGroupId", "MaxRecords", "Marker"]
+
+[[types]]
+shape = "ReplicationGroupMessage"
+rust_name = "DescribeReplicationGroupsResponse"
+include_fields = ["ReplicationGroups", "Marker"]
+
+[[types]]
+shape = "ReplicationGroup"
+include_fields = [
+    "ReplicationGroupId", "Description", "Status",
+    "NodeGroups", "MemberClusters", "CacheNodeType",
+    "AutomaticFailover", "MultiAZ", "ConfigurationEndpoint",
+    "SnapshotRetentionLimit", "SnapshotWindow", "ClusterEnabled",
+    "AuthTokenEnabled", "TransitEncryptionEnabled", "AtRestEncryptionEnabled",
+    "KmsKeyId", "ARN", "ReplicationGroupCreateTime", "Engine",
+]
+
+[[types]]
+shape = "NodeGroup"
+include_fields = ["NodeGroupId", "Status", "PrimaryEndpoint", "ReaderEndpoint", "Slots", "NodeGroupMembers"]
+
+[[types]]
+shape = "NodeGroupMember"
+include_fields = ["CacheClusterId", "CacheNodeId", "ReadEndpoint", "PreferredAvailabilityZone", "CurrentRole"]
+
+# --- Task 10.3 types: DeleteCacheCluster ---
+
+[[types]]
+shape = "DeleteCacheClusterMessage"
+rust_name = "DeleteCacheClusterRequest"
+include_fields = ["CacheClusterId", "FinalSnapshotIdentifier"]
+[types.field_overrides]
+CacheClusterId = { required = true }
+
+[[types]]
+shape = "DeleteCacheClusterResult"
+rust_name = "DeleteCacheClusterResponse"
+include_fields = ["CacheCluster"]
+
+# --- Task 10.3 types: DeleteReplicationGroup ---
+
+[[types]]
+shape = "DeleteReplicationGroupMessage"
+rust_name = "DeleteReplicationGroupRequest"
+include_fields = ["ReplicationGroupId", "RetainPrimaryCluster", "FinalSnapshotIdentifier"]
+[types.field_overrides]
+ReplicationGroupId = { required = true }
+
+[[types]]
+shape = "DeleteReplicationGroupResult"
+rust_name = "DeleteReplicationGroupResponse"
+include_fields = ["ReplicationGroup"]
+
+# --- Task 10.3 types: CreateSnapshot ---
+
+[[types]]
+shape = "CreateSnapshotMessage"
+rust_name = "CreateSnapshotRequest"
+include_fields = ["SnapshotName", "ReplicationGroupId", "CacheClusterId", "KmsKeyId"]
+[types.field_overrides]
+SnapshotName = { required = true }
+
+[[types]]
+shape = "CreateSnapshotResult"
+rust_name = "CreateSnapshotResponse"
+include_fields = ["Snapshot"]
+
+[[types]]
+shape = "Snapshot"
+include_fields = [
+    "SnapshotName", "ReplicationGroupId", "CacheClusterId",
+    "SnapshotStatus", "SnapshotSource", "CacheNodeType",
+    "Engine", "EngineVersion", "NumCacheNodes",
+    "PreferredAvailabilityZone", "CacheClusterCreateTime",
+    "PreferredMaintenanceWindow", "SnapshotRetentionLimit",
+    "SnapshotWindow", "NumNodeGroups", "AutomaticFailover",
+    "ARN", "KmsKeyId",
+]
+
+# === Operations ===
+
+# --- Task 10.2: Read operations ---
+
+[[operations]]
+name = "DescribeCacheClusters"
+rust_name = "describe_cache_clusters"
+
+[[operations]]
+name = "DescribeReplicationGroups"
+rust_name = "describe_replication_groups"
+
+# --- Task 10.3: Write operations ---
+
+[[operations]]
+name = "DeleteCacheCluster"
+rust_name = "delete_cache_cluster"
+
+[[operations]]
+name = "DeleteReplicationGroup"
+rust_name = "delete_replication_group"
+
+[[operations]]
+name = "CreateSnapshot"
+rust_name = "create_snapshot"

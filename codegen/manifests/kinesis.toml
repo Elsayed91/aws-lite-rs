@@ -1,0 +1,90 @@
+# AWS Kinesis manifest — JSON protocol with X-Amz-Target
+# Botocore model: kinesis/2013-12-02
+
+[api]
+name = "kinesis"
+display_name = "Amazon Kinesis"
+version = "v1"
+api_version = "2013-12-02"
+service_name = "kinesis"
+wire_format = "json_target"
+rename_all = "PascalCase"
+target_prefix = "Kinesis_20131202"
+json_version = "1.1"
+endpoint_prefix = "kinesis"
+
+[api.client]
+accessor_name = "kinesis"
+client_struct = "KinesisClient"
+
+# === Types ===
+
+[[types]]
+shape = "ListStreamsInput"
+include_fields = ["Limit", "NextToken"]
+
+[[types]]
+shape = "ListStreamsOutput"
+include_fields = ["StreamNames", "StreamSummaries", "NextToken", "HasMoreStreams"]
+[types.field_overrides]
+StreamNames = { rust_type = "Vec<String>" }
+StreamSummaries = { rust_type = "Vec<StreamSummary>" }
+
+[[types]]
+shape = "StreamSummary"
+include_fields = ["StreamName", "StreamARN", "StreamStatus", "StreamModeDetails", "StreamCreationTimestamp"]
+[types.field_overrides]
+StreamCreationTimestamp = { rust_type = "f64" }
+
+[[types]]
+shape = "DescribeStreamSummaryInput"
+include_fields = ["StreamName", "StreamARN"]
+
+[[types]]
+shape = "DescribeStreamSummaryOutput"
+include_fields = ["StreamDescriptionSummary"]
+
+[[types]]
+shape = "StreamDescriptionSummary"
+include_fields = ["StreamName", "StreamARN", "StreamStatus", "StreamModeDetails", "RetentionPeriodHours", "StreamCreationTimestamp", "OpenShardCount", "ConsumerCount", "EncryptionType", "KeyId"]
+[types.field_overrides]
+StreamCreationTimestamp = { rust_type = "f64" }
+
+[[types]]
+shape = "StreamModeDetails"
+include_fields = ["StreamMode"]
+[types.field_overrides]
+StreamMode = { required = true }
+
+[[types]]
+shape = "DeleteStreamInput"
+include_fields = ["StreamName", "StreamARN", "EnforceConsumerDeletion"]
+
+[[types]]
+shape = "UpdateStreamModeInput"
+include_fields = ["StreamARN", "StreamModeDetails"]
+[types.field_overrides]
+StreamARN = { required = true }
+StreamModeDetails = { required = true }
+
+# === Operations ===
+
+[[operations]]
+name = "ListStreams"
+rust_name = "list_streams"
+description = "Lists the Kinesis data streams associated with the AWS account."
+
+[[operations]]
+name = "DescribeStreamSummary"
+rust_name = "describe_stream_summary"
+description = "Provides a summarized description of the specified Kinesis data stream."
+
+[[operations]]
+name = "DeleteStream"
+rust_name = "delete_stream"
+description = "Deletes a Kinesis data stream and all its shards and data."
+
+[[operations]]
+name = "UpdateStreamMode"
+rust_name = "update_stream_mode"
+description = "Updates the capacity mode of a Kinesis data stream (PROVISIONED or ON_DEMAND)."

@@ -1,0 +1,101 @@
+# AWS Config manifest — JSON protocol with X-Amz-Target
+# Botocore model: config/2014-11-12/service-2.json
+
+[api]
+name = "config"
+display_name = "AWS Config"
+version = "v1"
+api_version = "2014-11-12"
+service_name = "config"
+wire_format = "json_target"
+rename_all = "PascalCase"
+target_prefix = "StarlingDoveService"
+json_version = "1.1"
+endpoint_prefix = "config"
+doc_url = "https://docs.aws.amazon.com/config/latest/APIReference/"
+
+[api.client]
+accessor_name = "config"
+client_struct = "ConfigClient"
+
+# === Types ===
+
+[[types]]
+shape = "SelectResourceConfigResponse"
+include_fields = ["Results", "QueryInfo", "NextToken"]
+
+[[types]]
+shape = "QueryInfo"
+include_fields = ["SelectFields"]
+
+[[types]]
+shape = "FieldInfo"
+include_fields = ["Name"]
+
+# --- Task 15.3 types: DescribeConfigurationRecorders + DescribeConfigurationRecorderStatus ---
+
+[[types]]
+shape = "DescribeConfigurationRecordersResponse"
+include_fields = ["ConfigurationRecorders"]
+
+[[types]]
+shape = "ConfigurationRecorder"
+include_fields = ["arn", "name", "roleARN", "recordingGroup"]
+# Nested entity shape uses camelCase/mixed keys — add explicit serde_renames to
+# override the PascalCase rename_all that is needed for the top-level response wrappers.
+[types.field_overrides]
+arn = { serde_rename = "arn" }
+name = { serde_rename = "name" }
+roleARN = { serde_rename = "roleARN" }
+recordingGroup = { serde_rename = "recordingGroup" }
+
+[[types]]
+shape = "RecordingGroup"
+include_fields = ["allSupported", "includeGlobalResourceTypes", "recordingStrategy"]
+[types.field_overrides]
+allSupported = { serde_rename = "allSupported" }
+includeGlobalResourceTypes = { serde_rename = "includeGlobalResourceTypes" }
+recordingStrategy = { serde_rename = "recordingStrategy" }
+
+[[types]]
+shape = "RecordingStrategy"
+include_fields = ["useOnly"]
+[types.field_overrides]
+useOnly = { serde_rename = "useOnly" }
+
+[[types]]
+shape = "DescribeConfigurationRecorderStatusResponse"
+include_fields = ["ConfigurationRecordersStatus"]
+
+[[types]]
+shape = "ConfigurationRecorderStatus"
+# Timestamps (lastStartTime, lastStopTime, lastStatusChangeTime) are excluded because the
+# Config JSON API returns them as Unix epoch floats, not ISO strings. Only the fields
+# needed for CIS 4.3 compliance checks are included.
+include_fields = ["arn", "name", "recording", "lastStatus", "lastErrorCode", "lastErrorMessage"]
+[types.field_overrides]
+arn = { serde_rename = "arn" }
+name = { serde_rename = "name" }
+recording = { serde_rename = "recording" }
+lastStatus = { enum_type = "RecorderStatus", serde_rename = "lastStatus" }
+lastErrorCode = { serde_rename = "lastErrorCode" }
+lastErrorMessage = { serde_rename = "lastErrorMessage" }
+
+# === Operations ===
+
+[[operations]]
+name = "SelectResourceConfig"
+rust_name = "select_resource_config"
+description = "Accepts a SQL SELECT command and returns matching resource configurations."
+
+# --- Task 15.3 operations ---
+
+[[operations]]
+name = "DescribeConfigurationRecorders"
+rust_name = "describe_configuration_recorders"
+description = "Returns the details for the specified configuration recorders."
+
+[[operations]]
+name = "DescribeConfigurationRecorderStatus"
+rust_name = "describe_configuration_recorder_status"
+description = "Returns the current status of the specified configuration recorder."

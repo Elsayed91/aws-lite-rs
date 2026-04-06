@@ -1,0 +1,141 @@
+[api]
+name = "eks"
+display_name = "Amazon Elastic Kubernetes Service"
+version = "v1"
+api_version = "2017-11-01"
+service_name = "eks"
+wire_format = "rest_json"
+endpoint_prefix = "eks"
+doc_url = "https://docs.aws.amazon.com/eks/latest/APIReference/"
+
+[api.client]
+accessor_name = "eks"
+client_struct = "EksClient"
+
+# === Types ===
+
+[[types]]
+shape = "DescribeClusterRequest"
+include_fields = ["name"]
+
+[[types]]
+shape = "DescribeClusterResponse"
+include_fields = ["cluster"]
+
+[[types]]
+shape = "Cluster"
+include_fields = [
+  "name",
+  "arn",
+  "version",
+  "endpoint",
+  "roleArn",
+  "resourcesVpcConfig",
+  "status",
+  "platformVersion",
+  "tags",
+]
+
+[[types]]
+shape = "VpcConfigResponse"
+include_fields = [
+  "subnetIds",
+  "securityGroupIds",
+  "clusterSecurityGroupId",
+  "vpcId",
+  "endpointPublicAccess",
+  "endpointPrivateAccess",
+  "publicAccessCidrs",
+]
+
+[[types]]
+shape = "ListNodegroupsRequest"
+include_fields = ["clusterName", "maxResults", "nextToken"]
+
+[[types]]
+shape = "ListNodegroupsResponse"
+include_fields = ["nodegroups", "nextToken"]
+
+[[types]]
+shape = "DescribeNodegroupRequest"
+include_fields = ["clusterName", "nodegroupName"]
+
+[[types]]
+shape = "DescribeNodegroupResponse"
+include_fields = ["nodegroup"]
+
+[[types]]
+shape = "Nodegroup"
+include_fields = [
+  "nodegroupName",
+  "nodegroupArn",
+  "clusterName",
+  "version",
+  "releaseVersion",
+  "status",
+  "capacityType",
+  "scalingConfig",
+  "instanceTypes",
+  "subnets",
+  "amiType",
+  "nodeRole",
+  "labels",
+  "diskSize",
+  "health",
+  "updateConfig",
+  "tags",
+]
+
+[[types]]
+shape = "NodegroupScalingConfig"
+include_fields = ["minSize", "maxSize", "desiredSize"]
+
+[[types]]
+shape = "NodegroupUpdateConfig"
+include_fields = ["maxUnavailable", "maxUnavailablePercentage"]
+
+[[types]]
+shape = "NodegroupHealth"
+include_fields = ["issues"]
+
+[[types]]
+shape = "Issue"
+include_fields = ["code", "message", "resourceIds"]
+
+[[types]]
+shape = "UpdateNodegroupConfigRequest"
+include_fields = ["clusterName", "nodegroupName", "scalingConfig", "updateConfig", "clientRequestToken"]
+
+[[types]]
+shape = "UpdateNodegroupConfigResponse"
+include_fields = ["update"]
+
+[[types]]
+shape = "Update"
+include_fields = ["id", "status", "type", "errors"]
+
+[[types]]
+shape = "ErrorDetail"
+include_fields = ["errorCode", "errorMessage", "resourceIds"]
+
+# === Operations ===
+
+[[operations]]
+name = "DescribeCluster"
+rust_name = "describe_cluster"
+description = "Returns descriptive information about an Amazon EKS cluster."
+
+[[operations]]
+name = "ListNodegroups"
+rust_name = "list_nodegroups"
+description = "Lists the managed node groups associated with the specified cluster."
+
+[[operations]]
+name = "DescribeNodegroup"
+rust_name = "describe_nodegroup"
+description = "Returns descriptive information about an Amazon EKS node group."
+
+[[operations]]
+name = "UpdateNodegroupConfig"
+rust_name = "update_nodegroup_config"
+description = "Updates an Amazon EKS managed node group configuration."

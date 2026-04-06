@@ -1,0 +1,34 @@
+# AWS Security Hub manifest — REST-JSON protocol
+# Botocore model: securityhub/2018-10-26
+#
+# Needed by AWS CIS benchmark checks:
+#   - CIS 5.16 (aws_security_hub_enabled): verify Security Hub is enabled
+#     per account/region (DescribeHub succeeds → enabled; ResourceNotFoundException → not enabled).
+
+[api]
+name = "securityhub"
+display_name = "AWS Security Hub"
+version = "v1"
+api_version = "2018-10-26"
+service_name = "securityhub"
+wire_format = "rest_json"
+endpoint_prefix = "securityhub"
+rename_all = "PascalCase"
+doc_url = "https://docs.aws.amazon.com/securityhub/1.0/APIReference/"
+
+[api.client]
+accessor_name = "securityhub"
+client_struct = "SecurityHubClient"
+
+# === Types ===
+
+[[types]]
+shape = "DescribeHubResponse"
+include_fields = ["HubArn", "SubscribedAt", "AutoEnableControls", "ControlFindingGenerator"]
+
+# === Operations ===
+
+[[operations]]
+name = "DescribeHub"
+rust_name = "describe_hub"
+description = "Returns details about the Hub resource in your account, including the HubArn and the time when you enabled Security Hub."

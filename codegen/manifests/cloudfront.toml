@@ -1,0 +1,145 @@
+# Amazon CloudFront manifest
+# Botocore model: cloudfront
+# REST-XML protocol with path-based routing
+
+[api]
+name = "cloudfront"
+display_name = "Amazon CloudFront"
+version = "v1"
+api_version = "2020-05-31"
+service_name = "cloudfront"
+wire_format = "rest_xml"
+endpoint_prefix = "cloudfront"
+doc_url = "https://docs.aws.amazon.com/cloudfront/latest/APIReference"
+
+[api.client]
+accessor_name = "cloudfront"
+client_struct = "CloudfrontClient"
+
+# === Response Types ===
+
+[[types]]
+shape = "DistributionList"
+include_fields = ["Marker", "NextMarker", "MaxItems", "IsTruncated", "Quantity", "Items"]
+
+[types.field_overrides]
+MaxItems = { required = true }
+IsTruncated = { required = true }
+Quantity = { required = true }
+
+[[types]]
+shape = "DistributionSummary"
+include_fields = ["Id", "ARN", "Status", "DomainName", "Origins", "DefaultCacheBehavior", "PriceClass", "Enabled", "Comment"]
+
+[types.field_overrides]
+Id = { required = true }
+ARN = { required = true, serde_rename = "ARN" }
+Status = { required = true }
+DomainName = { required = true }
+Enabled = { required = true }
+
+[[types]]
+shape = "Distribution"
+include_fields = ["Id", "ARN", "Status", "DomainName", "DistributionConfig"]
+
+[types.field_overrides]
+Id = { required = true }
+ARN = { required = true, serde_rename = "ARN" }
+Status = { required = true }
+DomainName = { required = true }
+
+[[types]]
+shape = "DistributionConfig"
+include_fields = ["CallerReference", "Aliases", "DefaultRootObject", "Origins", "DefaultCacheBehavior", "Comment", "PriceClass", "Enabled", "ViewerCertificate"]
+
+[types.field_overrides]
+CallerReference = { required = true }
+Comment = { required = true }
+Enabled = { required = true }
+
+[[types]]
+shape = "Aliases"
+include_fields = ["Quantity", "Items"]
+
+[types.field_overrides]
+Quantity = { required = true }
+
+[[types]]
+shape = "ViewerCertificate"
+include_fields = ["CloudFrontDefaultCertificate", "IAMCertificateId", "ACMCertificateArn", "SSLSupportMethod", "MinimumProtocolVersion"]
+
+[[types]]
+shape = "Origins"
+include_fields = ["Quantity", "Items"]
+
+[types.field_overrides]
+Quantity = { required = true }
+
+[[types]]
+shape = "Origin"
+include_fields = ["Id", "DomainName", "S3OriginConfig", "OriginAccessControlId"]
+
+[types.field_overrides]
+Id = { required = true }
+DomainName = { required = true }
+
+[[types]]
+shape = "S3OriginConfig"
+include_fields = ["OriginAccessIdentity"]
+
+[types.field_overrides]
+OriginAccessIdentity = { required = true }
+
+[[types]]
+shape = "DefaultCacheBehavior"
+include_fields = ["TargetOriginId", "ViewerProtocolPolicy"]
+
+[types.field_overrides]
+TargetOriginId = { required = true }
+ViewerProtocolPolicy = { required = true }
+
+[[types]]
+shape = "OriginAccessControl"
+include_fields = ["Id", "OriginAccessControlConfig"]
+
+[types.field_overrides]
+Id = { required = true }
+
+[[types]]
+shape = "OriginAccessControlConfig"
+include_fields = ["Name", "Description", "SigningProtocol", "SigningBehavior", "OriginAccessControlOriginType"]
+
+[types.field_overrides]
+Name = { required = true }
+SigningProtocol = { required = true }
+SigningBehavior = { required = true }
+OriginAccessControlOriginType = { required = true }
+
+# === Operations ===
+
+# Read ops
+[[operations]]
+name = "ListDistributions"
+rust_name = "list_distributions"
+description = "List CloudFront distributions."
+
+[[operations]]
+name = "GetDistributionConfig"
+rust_name = "get_distribution_config"
+description = "Get the configuration for a CloudFront distribution."
+
+# Write ops
+[[operations]]
+name = "UpdateDistribution"
+rust_name = "update_distribution"
+description = "Update a CloudFront distribution configuration."
+
+[[operations]]
+name = "CreateOriginAccessControl"
+rust_name = "create_origin_access_control"
+description = "Creates a new origin access control in CloudFront."
+
+[[operations]]
+name = "CreateDistribution"
+rust_name = "create_distribution"
+description = "Creates a new CloudFront distribution."

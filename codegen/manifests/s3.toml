@@ -1,0 +1,250 @@
+# Amazon Simple Storage Service (Amazon S3) manifest
+# Botocore model: s3
+# REST-XML protocol with path-based routing
+
+[api]
+name = "s3"
+display_name = "Amazon S3"
+version = "v1"
+api_version = "2006-03-01"
+service_name = "s3"
+wire_format = "rest_xml"
+endpoint_prefix = "s3"
+# S3 botocore has globalEndpoint=s3.amazonaws.com but that only works
+# for us-east-1. Override to force regional URLs (s3.{region}.amazonaws.com).
+global_endpoint = ""
+
+[api.client]
+accessor_name = "s3"
+client_struct = "S3Client"
+
+# === Types ===
+
+# --- Existing types ---
+
+[[types]]
+shape = "PublicAccessBlockConfiguration"
+include_fields = ["BlockPublicAcls", "IgnorePublicAcls", "BlockPublicPolicy", "RestrictPublicBuckets"]
+
+[[types]]
+shape = "BucketLifecycleConfiguration"
+include_fields = ["Rules"]
+
+[[types]]
+shape = "LifecycleRuleFilter"
+include_fields = ["Prefix", "ObjectSizeGreaterThan", "ObjectSizeLessThan"]
+
+# LifecycleRule: explicit to add serde renames for S3 XML element names.
+# S3 uses <ID> (not <Id>), <Transition> (not <Transitions>),
+# <NoncurrentVersionTransition> (not <NoncurrentVersionTransitions>).
+[[types]]
+shape = "LifecycleRule"
+include_fields = ["Expiration", "ID", "Prefix", "Filter", "Status", "Transitions", "NoncurrentVersionTransitions", "NoncurrentVersionExpiration", "AbortIncompleteMultipartUpload"]
+[types.field_overrides]
+ID = { serde_rename = "ID" }
+Transitions = { serde_rename = "Transition" }
+NoncurrentVersionTransitions = { serde_rename = "NoncurrentVersionTransition" }
+
+# --- Task 6.1 types: ListBuckets ---
+
+[[types]]
+shape = "ListBucketsOutput"
+rust_name = "ListBucketsResponse"
+include_fields = ["Buckets", "Owner"]
+
+[[types]]
+shape = "Bucket"
+include_fields = ["Name", "CreationDate"]
+
+[[types]]
+shape = "Owner"
+include_fields = ["DisplayName", "ID"]
+[types.field_overrides]
+ID = { serde_rename = "ID" }
+
+# --- Task 6.1 types: GetBucketVersioning ---
+
+[[types]]
+shape = "GetBucketVersioningOutput"
+rust_name = "GetBucketVersioningResponse"
+include_fields = ["Status", "MFADelete"]
+[types.field_overrides]
+MFADelete = { serde_rename = "MfaDelete" }
+
+# --- Task 6.1 types: GetBucketEncryption ---
+
+[[types]]
+shape = "GetBucketEncryptionOutput"
+rust_name = "GetBucketEncryptionResponse"
+include_fields = ["ServerSideEncryptionConfiguration"]
+
+[[types]]
+shape = "ServerSideEncryptionConfiguration"
+include_fields = ["Rules"]
+[types.field_overrides]
+Rules = { serde_rename = "Rule" }
+
+[[types]]
+shape = "ServerSideEncryptionRule"
+include_fields = ["ApplyServerSideEncryptionByDefault", "BucketKeyEnabled"]
+
+[[types]]
+shape = "ServerSideEncryptionByDefault"
+include_fields = ["SSEAlgorithm", "KMSMasterKeyID"]
+[types.field_overrides]
+SSEAlgorithm = { serde_rename = "SSEAlgorithm" }
+KMSMasterKeyID = { serde_rename = "KMSMasterKeyID" }
+
+# --- Task 6.1 types: GetBucketLogging ---
+
+[[types]]
+shape = "GetBucketLoggingOutput"
+rust_name = "GetBucketLoggingResponse"
+include_fields = ["LoggingEnabled"]
+
+[[types]]
+shape = "LoggingEnabled"
+include_fields = ["TargetBucket", "TargetPrefix"]
+[types.field_overrides]
+TargetBucket = { required = true }
+
+# --- Task 6.1 types: GetBucketAcl ---
+
+[[types]]
+shape = "GetBucketAclOutput"
+rust_name = "GetBucketAclResponse"
+include_fields = ["Owner", "Grants"]
+[types.field_overrides]
+Grants = { serde_rename = "AccessControlList" }
+
+[[types]]
+shape = "Grant"
+include_fields = ["Grantee", "Permission"]
+
+[[types]]
+shape = "Grantee"
+include_fields = ["DisplayName", "ID", "URI"]
+[types.field_overrides]
+ID = { serde_rename = "ID" }
+
+# --- Task 6.1 types: GetBucketLifecycleConfiguration ---
+
+[[types]]
+shape = "GetBucketLifecycleConfigurationOutput"
+rust_name = "GetBucketLifecycleConfigurationResponse"
+include_fields = ["Rules"]
+[types.field_overrides]
+Rules = { serde_rename = "Rule" }
+
+# --- Task 6.1 types: GetPublicAccessBlock ---
+
+[[types]]
+shape = "GetPublicAccessBlockOutput"
+rust_name = "GetPublicAccessBlockResponse"
+include_fields = ["PublicAccessBlockConfiguration"]
+
+# Note: GetBucketPolicy returns raw JSON string (payload response), not XML.
+# The response type and operation are implemented manually in api/s3.rs.
+
+# --- Task 6.1 types: PutBucketVersioning ---
+
+[[types]]
+shape = "VersioningConfiguration"
+include_fields = ["MFADelete", "Status"]
+[types.field_overrides]
+MFADelete = { serde_rename = "MfaDelete" }
+
+# --- Task 6.1 types: PutBucketEncryption ---
+
+# ServerSideEncryptionConfiguration already defined above
+
+# --- Task 6.1 types: PutBucketLogging ---
+
+[[types]]
+shape = "BucketLoggingStatus"
+include_fields = ["LoggingEnabled"]
+
+# === Operations ===
+
+# --- Existing operations ---
+
+[[operations]]
+name = "PutBucketPolicy"
+rust_name = "put_bucket_policy"
+description = "Applies an Amazon S3 bucket policy to an Amazon S3 bucket."
+
+[[operations]]
+name = "DeleteBucketPolicy"
+rust_name = "delete_bucket_policy"
+description = "Deletes the policy of a specified bucket."
+
+[[operations]]
+name = "PutPublicAccessBlock"
+rust_name = "put_public_access_block"
+description = "Creates or modifies the PublicAccessBlock configuration for an Amazon S3 bucket."
+
+[[operations]]
+name = "PutBucketLifecycleConfiguration"
+rust_name = "put_bucket_lifecycle_configuration"
+description = "Creates a new lifecycle configuration for the bucket or replaces an existing lifecycle configuration."
+
+# --- Task 6.1 operations: Read operations ---
+
+[[operations]]
+name = "ListBuckets"
+rust_name = "list_buckets"
+description = "Returns a list of all buckets owned by the authenticated sender of the request."
+
+[[operations]]
+name = "GetBucketVersioning"
+rust_name = "get_bucket_versioning"
+description = "Returns the versioning state of a bucket."
+
+[[operations]]
+name = "GetBucketEncryption"
+rust_name = "get_bucket_encryption"
+description = "Returns the default encryption configuration for an Amazon S3 bucket."
+
+[[operations]]
+name = "GetBucketLogging"
+rust_name = "get_bucket_logging"
+description = "Returns the logging status of a bucket and the permissions users have to view and modify that status."
+
+[[operations]]
+name = "GetBucketAcl"
+rust_name = "get_bucket_acl"
+description = "Returns the access control list (ACL) of a bucket."
+
+[[operations]]
+name = "GetBucketLifecycleConfiguration"
+rust_name = "get_bucket_lifecycle_configuration"
+description = "Returns the lifecycle configuration information set on the bucket."
+
+[[operations]]
+name = "GetPublicAccessBlock"
+rust_name = "get_public_access_block"
+description = "Retrieves the PublicAccessBlock configuration for an Amazon S3 bucket."
+
+# GetBucketPolicy is implemented manually in api/s3.rs (payload response = raw JSON string)
+
+# --- Task 6.1 operations: Write operations ---
+
+[[operations]]
+name = "DeleteBucketLifecycle"
+rust_name = "delete_bucket_lifecycle_configuration"
+description = "Deletes the lifecycle configuration from the specified bucket."
+
+[[operations]]
+name = "PutBucketVersioning"
+rust_name = "put_bucket_versioning"
+description = "Sets the versioning state of an existing bucket."
+
+[[operations]]
+name = "PutBucketEncryption"
+rust_name = "put_bucket_encryption"
+description = "Creates the default encryption configuration for an Amazon S3 bucket."
+
+[[operations]]
+name = "PutBucketLogging"
+rust_name = "put_bucket_logging"
+description = "Set the logging parameters for a bucket."

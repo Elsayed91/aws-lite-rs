@@ -1,0 +1,142 @@
+# AWS CloudTrail manifest — JSON Target protocol
+# Botocore model: cloudtrail/2013-11-01/service-2.json
+
+[api]
+name = "cloudtrail"
+display_name = "AWS CloudTrail"
+version = "v1"
+api_version = "2013-11-01"
+service_name = "cloudtrail"
+wire_format = "json_target"
+rename_all = "PascalCase"
+target_prefix = "com.amazonaws.cloudtrail.v20131101.CloudTrail_20131101"
+json_version = "1.1"
+endpoint_prefix = "cloudtrail"
+doc_url = "https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/"
+
+[api.client]
+accessor_name = "cloudtrail"
+client_struct = "CloudtrailClient"
+
+# === Types ===
+
+[[types]]
+shape = "DescribeTrailsRequest"
+include_fields = ["trailNameList", "includeShadowTrails"]
+[types.field_overrides]
+trailNameList = { serde_rename = "trailNameList" }
+includeShadowTrails = { serde_rename = "includeShadowTrails" }
+
+[[types]]
+shape = "DescribeTrailsResponse"
+include_fields = ["trailList"]
+[types.field_overrides]
+trailList = { serde_rename = "trailList" }
+
+[[types]]
+shape = "Trail"
+include_fields = ["Name", "S3BucketName", "S3KeyPrefix", "SnsTopicARN", "IncludeGlobalServiceEvents",
+                  "IsMultiRegionTrail", "HomeRegion", "TrailARN", "LogFileValidationEnabled",
+                  "CloudWatchLogsLogGroupArn", "CloudWatchLogsRoleArn", "KmsKeyId",
+                  "HasCustomEventSelectors", "HasInsightSelectors", "IsOrganizationTrail"]
+[types.field_overrides]
+TrailARN = { serde_rename = "TrailARN" }
+SnsTopicARN = { serde_rename = "SnsTopicARN" }
+
+[[types]]
+shape = "GetTrailStatusRequest"
+include_fields = ["Name"]
+
+[[types]]
+shape = "GetTrailStatusResponse"
+include_fields = ["IsLogging", "LatestDeliveryError", "LatestNotificationError",
+                  "LatestDeliveryTime", "LatestNotificationTime",
+                  "StartLoggingTime", "StopLoggingTime",
+                  "LatestCloudWatchLogsDeliveryError", "LatestCloudWatchLogsDeliveryTime",
+                  "LatestDigestDeliveryTime", "LatestDigestDeliveryError"]
+[types.field_overrides]
+LatestDeliveryTime = { rust_type = "f64" }
+LatestNotificationTime = { rust_type = "f64" }
+StartLoggingTime = { rust_type = "f64" }
+StopLoggingTime = { rust_type = "f64" }
+LatestCloudWatchLogsDeliveryTime = { rust_type = "f64" }
+LatestDigestDeliveryTime = { rust_type = "f64" }
+
+[[types]]
+shape = "GetEventSelectorsRequest"
+include_fields = ["TrailName"]
+
+[[types]]
+shape = "GetEventSelectorsResponse"
+include_fields = ["TrailARN", "EventSelectors", "AdvancedEventSelectors"]
+[types.field_overrides]
+TrailARN = { serde_rename = "TrailARN" }
+
+[[types]]
+shape = "EventSelector"
+include_fields = ["ReadWriteType", "IncludeManagementEvents", "DataResources"]
+
+[[types]]
+shape = "DataResource"
+include_fields = ["Type", "Values"]
+
+[[types]]
+shape = "AdvancedEventSelector"
+include_fields = ["Name", "FieldSelectors"]
+
+[[types]]
+shape = "AdvancedFieldSelector"
+include_fields = ["Field", "Equals", "StartsWith", "EndsWith", "NotEquals", "NotStartsWith", "NotEndsWith"]
+
+[[types]]
+shape = "DeleteTrailRequest"
+include_fields = ["Name"]
+
+[[types]]
+shape = "DeleteTrailResponse"
+include_fields = []
+
+[[types]]
+shape = "UpdateTrailRequest"
+include_fields = ["Name", "S3BucketName", "S3KeyPrefix", "SnsTopicName",
+                  "IncludeGlobalServiceEvents", "IsMultiRegionTrail",
+                  "EnableLogFileValidation", "CloudWatchLogsLogGroupArn",
+                  "CloudWatchLogsRoleArn", "KmsKeyId", "IsOrganizationTrail"]
+
+[[types]]
+shape = "UpdateTrailResponse"
+include_fields = ["Name", "S3BucketName", "S3KeyPrefix", "SnsTopicARN",
+                  "IncludeGlobalServiceEvents", "IsMultiRegionTrail",
+                  "TrailARN", "LogFileValidationEnabled",
+                  "CloudWatchLogsLogGroupArn", "CloudWatchLogsRoleArn",
+                  "KmsKeyId", "IsOrganizationTrail"]
+[types.field_overrides]
+TrailARN = { serde_rename = "TrailARN" }
+SnsTopicARN = { serde_rename = "SnsTopicARN" }
+
+# === Operations ===
+
+[[operations]]
+name = "DescribeTrails"
+rust_name = "describe_trails"
+description = "Retrieves settings for one or more trails associated with the current region."
+
+[[operations]]
+name = "GetTrailStatus"
+rust_name = "get_trail_status"
+description = "Returns a JSON-formatted list of information about the specified trail."
+
+[[operations]]
+name = "GetEventSelectors"
+rust_name = "get_event_selectors"
+description = "Describes the settings for the event selectors configured for your trail."
+
+[[operations]]
+name = "DeleteTrail"
+rust_name = "delete_trail"
+description = "Deletes a trail."
+
+[[operations]]
+name = "UpdateTrail"
+rust_name = "update_trail"
+description = "Updates trail settings that control what events you are logging."

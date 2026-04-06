@@ -1,0 +1,68 @@
+# AWS Elastic File System (EFS) manifest — REST-JSON protocol
+# Botocore model: efs/2015-02-01
+#
+# Needed by AWS CIS benchmark checks:
+#   - CIS 3.3.1 (aws_efs_encryption): verify EFS file systems have encryption at
+#     rest enabled (Encrypted: true on every FileSystemDescription).
+
+[api]
+name = "efs"
+display_name = "Amazon Elastic File System"
+version = "v1"
+api_version = "2015-02-01"
+service_name = "elasticfilesystem"
+wire_format = "rest_json"
+endpoint_prefix = "elasticfilesystem"
+rename_all = "PascalCase"
+doc_url = "https://docs.aws.amazon.com/efs/latest/ug/API_Operations.html"
+
+[api.client]
+accessor_name = "efs"
+client_struct = "EfsClient"
+
+# === Types ===
+
+[[types]]
+shape = "DescribeFileSystemsRequest"
+include_fields = ["MaxItems", "Marker", "FileSystemId"]
+
+[[types]]
+shape = "DescribeFileSystemsResponse"
+include_fields = ["FileSystems", "NextMarker", "Marker"]
+
+[[types]]
+shape = "FileSystemDescription"
+include_fields = [
+    "OwnerId",
+    "FileSystemId",
+    "FileSystemArn",
+    "CreationTime",
+    "LifeCycleState",
+    "Name",
+    "NumberOfMountTargets",
+    "PerformanceMode",
+    "Encrypted",
+    "KmsKeyId",
+    "ThroughputMode",
+    "Tags",
+]
+
+[types.field_overrides]
+FileSystemId = { required = true }
+LifeCycleState = { required = true }
+PerformanceMode = { required = true }
+
+[[types]]
+shape = "Tag"
+include_fields = ["Key", "Value"]
+
+[types.field_overrides]
+Key = { required = true }
+Value = { required = true }
+
+# === Operations ===
+
+[[operations]]
+name = "DescribeFileSystems"
+rust_name = "describe_file_systems"
+description = "Returns the description of a specific Amazon EFS file system if either the file system CreationToken or the FileSystemId is provided. Otherwise, it returns descriptions of all file systems owned by the caller's Amazon Web Services account in the Amazon Web Services Region of the endpoint that you're calling."

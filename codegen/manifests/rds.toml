@@ -1,0 +1,265 @@
+# Amazon RDS manifest — Query/XML protocol
+# Botocore model: rds/2014-10-31/service-2.json
+
+[api]
+name = "rds"
+display_name = "Amazon Relational Database Service"
+version = "v1"
+api_version = "2014-10-31"
+service_name = "rds"
+wire_format = "query_xml"
+endpoint_prefix = "rds"
+doc_url = "https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/"
+
+[api.client]
+accessor_name = "rds"
+client_struct = "RdsClient"
+
+# === Types ===
+
+# --- Task 9.2 types: DescribeDBInstances ---
+
+[[types]]
+shape = "DescribeDBInstancesMessage"
+rust_name = "DescribeDBInstancesRequest"
+include_fields = ["DBInstanceIdentifier", "Filters", "MaxRecords", "Marker"]
+
+[[types]]
+shape = "DBInstanceMessage"
+rust_name = "DescribeDBInstancesResponse"
+include_fields = ["DBInstances", "Marker"]
+
+[[types]]
+shape = "DBInstance"
+include_fields = [
+    "DBInstanceIdentifier", "DBInstanceClass", "Engine", "DBInstanceStatus",
+    "MasterUsername", "DBName", "Endpoint", "AllocatedStorage",
+    "InstanceCreateTime", "PreferredBackupWindow", "BackupRetentionPeriod",
+    "AvailabilityZone", "PreferredMaintenanceWindow", "MultiAZ",
+    "EngineVersion", "AutoMinorVersionUpgrade", "PubliclyAccessible",
+    "StorageType", "StorageEncrypted", "KmsKeyId", "DbiResourceId",
+    "DBInstanceArn", "Iops", "StorageThroughput",
+]
+
+[[types]]
+shape = "Endpoint"
+include_fields = ["Address", "Port", "HostedZoneId"]
+
+[[types]]
+shape = "Filter"
+include_fields = ["Name", "Values"]
+[types.field_overrides]
+Name = { required = true }
+Values = { required = true }
+
+# --- Task 9.2 types: DescribeDBSnapshots ---
+
+[[types]]
+shape = "DescribeDBSnapshotsMessage"
+rust_name = "DescribeDBSnapshotsRequest"
+include_fields = ["DBInstanceIdentifier", "DBSnapshotIdentifier", "SnapshotType", "Filters", "MaxRecords", "Marker", "IncludeShared", "IncludePublic"]
+
+[[types]]
+shape = "DBSnapshotMessage"
+rust_name = "DescribeDBSnapshotsResponse"
+include_fields = ["DBSnapshots", "Marker"]
+
+[[types]]
+shape = "DBSnapshot"
+include_fields = [
+    "DBSnapshotIdentifier", "DBInstanceIdentifier", "SnapshotCreateTime",
+    "Engine", "AllocatedStorage", "Status", "Port", "AvailabilityZone",
+    "VpcId", "InstanceCreateTime", "MasterUsername", "EngineVersion",
+    "SnapshotType", "Iops", "StorageThroughput", "StorageType",
+    "Encrypted", "KmsKeyId", "DBSnapshotArn", "PercentProgress",
+]
+
+# --- Task 9.2 types: DescribeDBSnapshotAttributes ---
+
+[[types]]
+shape = "DescribeDBSnapshotAttributesMessage"
+rust_name = "DescribeDBSnapshotAttributesRequest"
+include_fields = ["DBSnapshotIdentifier"]
+[types.field_overrides]
+DBSnapshotIdentifier = { required = true }
+
+[[types]]
+shape = "DescribeDBSnapshotAttributesResult"
+rust_name = "DescribeDBSnapshotAttributesResponse"
+include_fields = ["DBSnapshotAttributesResult"]
+
+[[types]]
+shape = "DBSnapshotAttributesResult"
+include_fields = ["DBSnapshotIdentifier", "DBSnapshotAttributes"]
+
+[[types]]
+shape = "DBSnapshotAttribute"
+include_fields = ["AttributeName", "AttributeValues"]
+
+# --- Task 9.3 types: ModifyDBInstance ---
+
+[[types]]
+shape = "ModifyDBInstanceMessage"
+rust_name = "ModifyDBInstanceRequest"
+include_fields = [
+    "DBInstanceIdentifier", "AllocatedStorage", "DBInstanceClass",
+    "ApplyImmediately", "MasterUserPassword", "BackupRetentionPeriod",
+    "PreferredBackupWindow", "PreferredMaintenanceWindow", "MultiAZ",
+    "EngineVersion", "AutoMinorVersionUpgrade", "Iops", "StorageType",
+    "PubliclyAccessible", "StorageThroughput",
+]
+[types.field_overrides]
+DBInstanceIdentifier = { required = true }
+
+[[types]]
+shape = "ModifyDBInstanceResult"
+rust_name = "ModifyDBInstanceResponse"
+include_fields = ["DBInstance"]
+
+# --- Task 9.3 types: StopDBInstance ---
+
+[[types]]
+shape = "StopDBInstanceMessage"
+rust_name = "StopDBInstanceRequest"
+include_fields = ["DBInstanceIdentifier", "DBSnapshotIdentifier"]
+[types.field_overrides]
+DBInstanceIdentifier = { required = true }
+
+[[types]]
+shape = "StopDBInstanceResult"
+rust_name = "StopDBInstanceResponse"
+include_fields = ["DBInstance"]
+
+# --- Task 9.3 types: StartDBInstance ---
+
+[[types]]
+shape = "StartDBInstanceMessage"
+rust_name = "StartDBInstanceRequest"
+include_fields = ["DBInstanceIdentifier"]
+[types.field_overrides]
+DBInstanceIdentifier = { required = true }
+
+[[types]]
+shape = "StartDBInstanceResult"
+rust_name = "StartDBInstanceResponse"
+include_fields = ["DBInstance"]
+
+# --- Task 9.3 types: DeleteDBInstance ---
+
+[[types]]
+shape = "DeleteDBInstanceMessage"
+rust_name = "DeleteDBInstanceRequest"
+include_fields = ["DBInstanceIdentifier", "SkipFinalSnapshot", "FinalDBSnapshotIdentifier", "DeleteAutomatedBackups"]
+[types.field_overrides]
+DBInstanceIdentifier = { required = true }
+
+[[types]]
+shape = "DeleteDBInstanceResult"
+rust_name = "DeleteDBInstanceResponse"
+include_fields = ["DBInstance"]
+
+# --- Task 9.3 types: CreateDBSnapshot ---
+
+[[types]]
+shape = "CreateDBSnapshotMessage"
+rust_name = "CreateDBSnapshotRequest"
+include_fields = ["DBSnapshotIdentifier", "DBInstanceIdentifier", "Tags"]
+[types.field_overrides]
+DBSnapshotIdentifier = { required = true }
+DBInstanceIdentifier = { required = true }
+
+[[types]]
+shape = "CreateDBSnapshotResult"
+rust_name = "CreateDBSnapshotResponse"
+include_fields = ["DBSnapshot"]
+
+# --- Task 9.3 types: DeleteDBSnapshot ---
+
+[[types]]
+shape = "DeleteDBSnapshotMessage"
+rust_name = "DeleteDBSnapshotRequest"
+include_fields = ["DBSnapshotIdentifier"]
+[types.field_overrides]
+DBSnapshotIdentifier = { required = true }
+
+[[types]]
+shape = "DeleteDBSnapshotResult"
+rust_name = "DeleteDBSnapshotResponse"
+include_fields = ["DBSnapshot"]
+
+# --- Task 9.3 types: ModifyDBSnapshotAttribute ---
+
+[[types]]
+shape = "ModifyDBSnapshotAttributeMessage"
+rust_name = "ModifyDBSnapshotAttributeRequest"
+include_fields = ["DBSnapshotIdentifier", "AttributeName", "ValuesToAdd", "ValuesToRemove"]
+[types.field_overrides]
+DBSnapshotIdentifier = { required = true }
+AttributeName = { required = true }
+
+[[types]]
+shape = "ModifyDBSnapshotAttributeResult"
+rust_name = "ModifyDBSnapshotAttributeResponse"
+include_fields = ["DBSnapshotAttributesResult"]
+
+# --- Shared types ---
+
+[[types]]
+shape = "Tag"
+include_fields = ["Key", "Value"]
+
+# === Operations ===
+
+# --- Task 9.2 operations ---
+
+[[operations]]
+name = "DescribeDBInstances"
+rust_name = "describe_db_instances"
+description = "Describes provisioned RDS instances."
+
+[[operations]]
+name = "DescribeDBSnapshots"
+rust_name = "describe_db_snapshots"
+description = "Returns information about DB snapshots."
+
+[[operations]]
+name = "DescribeDBSnapshotAttributes"
+rust_name = "describe_db_snapshot_attributes"
+description = "Returns a list of DB snapshot attribute names and values for a manual DB snapshot."
+
+# --- Task 9.3 operations ---
+
+[[operations]]
+name = "ModifyDBInstance"
+rust_name = "modify_db_instance"
+description = "Modifies settings for a DB instance."
+
+[[operations]]
+name = "StopDBInstance"
+rust_name = "stop_db_instance"
+description = "Stops an Amazon RDS DB instance."
+
+[[operations]]
+name = "StartDBInstance"
+rust_name = "start_db_instance"
+description = "Starts an Amazon RDS DB instance that was stopped."
+
+[[operations]]
+name = "DeleteDBInstance"
+rust_name = "delete_db_instance"
+description = "Deletes a previously provisioned DB instance."
+
+[[operations]]
+name = "CreateDBSnapshot"
+rust_name = "create_db_snapshot"
+description = "Creates a snapshot of a DB instance."
+
+[[operations]]
+name = "DeleteDBSnapshot"
+rust_name = "delete_db_snapshot"
+description = "Deletes a DB snapshot."
+
+[[operations]]
+name = "ModifyDBSnapshotAttribute"
+rust_name = "modify_db_snapshot_attribute"
+description = "Adds an attribute and values to, or removes an attribute and values from, a manual DB snapshot."

@@ -1,0 +1,375 @@
+# IAM manifest — Query/XML protocol
+# Botocore model: iam/2010-05-08/service-2.json
+# Note: IAM is a global service (iam.amazonaws.com) but supports regional
+# endpoints. The codegen generates https://iam.{region}.amazonaws.com which
+# works with us-east-1 or any region with IAM regional endpoint support.
+
+[api]
+name = "iam"
+display_name = "AWS Identity and Access Management"
+version = "v1"
+api_version = "2010-05-08"
+service_name = "iam"
+wire_format = "query_xml"
+endpoint_prefix = "iam"
+doc_url = "https://docs.aws.amazon.com/IAM/latest/APIReference/"
+
+[api.client]
+accessor_name = "iam"
+client_struct = "IamClient"
+
+# === Types ===
+
+[[types]]
+shape = "ListUsersResponse"
+include_fields = ["Users", "IsTruncated", "Marker"]
+
+[[types]]
+shape = "User"
+include_fields = ["Arn", "UserName", "CreateDate"]
+[types.field_overrides]
+Arn = { required = true }
+UserName = { required = true }
+CreateDate = { required = true }
+
+[[types]]
+shape = "ListAttachedUserPoliciesResponse"
+include_fields = ["AttachedPolicies", "IsTruncated", "Marker"]
+
+[[types]]
+shape = "AttachedPolicy"
+include_fields = ["PolicyArn", "PolicyName"]
+
+# --- Task 5.2 types: Access Keys + Credential Report ---
+
+[[types]]
+shape = "ListAccessKeysResponse"
+include_fields = ["AccessKeyMetadata", "IsTruncated", "Marker"]
+
+[[types]]
+shape = "AccessKeyMetadata"
+include_fields = ["UserName", "AccessKeyId", "Status", "CreateDate"]
+[types.field_overrides]
+Status = { enum_type = "AccessKeyStatus" }
+
+[[types]]
+shape = "GetAccessKeyLastUsedResponse"
+include_fields = ["UserName", "AccessKeyLastUsed"]
+
+[[types]]
+shape = "AccessKeyLastUsed"
+include_fields = ["LastUsedDate", "ServiceName", "Region"]
+
+[[types]]
+shape = "GenerateCredentialReportResponse"
+include_fields = ["State", "Description"]
+[types.field_overrides]
+State = { enum_type = "ReportStateType" }
+
+[[types]]
+shape = "GetCredentialReportResponse"
+include_fields = ["Content", "ReportFormat", "GeneratedTime"]
+[types.field_overrides]
+ReportFormat = { enum_type = "ReportFormatType" }
+
+# --- Task 5.3 types: MFA, Login Profile, Account Summary/Password Policy ---
+
+[[types]]
+shape = "ListMFADevicesResponse"
+include_fields = ["MFADevices", "IsTruncated", "Marker"]
+[types.field_overrides]
+MFADevices = { serde_rename = "MFADevices" }
+
+[[types]]
+shape = "MFADevice"
+include_fields = ["UserName", "SerialNumber", "EnableDate"]
+[types.field_overrides]
+UserName = { required = true }
+SerialNumber = { required = true }
+EnableDate = { required = true }
+
+[[types]]
+shape = "GetLoginProfileResponse"
+include_fields = ["LoginProfile"]
+
+[[types]]
+shape = "LoginProfile"
+include_fields = ["UserName", "CreateDate", "PasswordResetRequired"]
+[types.field_overrides]
+UserName = { required = true }
+CreateDate = { required = true }
+
+[[types]]
+shape = "GetAccountSummaryResponse"
+include_fields = ["SummaryMap"]
+
+[[types]]
+shape = "GetAccountPasswordPolicyResponse"
+include_fields = ["PasswordPolicy"]
+
+[[types]]
+shape = "PasswordPolicy"
+include_fields = ["MinimumPasswordLength", "RequireSymbols", "RequireNumbers", "RequireUppercaseCharacters", "RequireLowercaseCharacters", "AllowUsersToChangePassword", "ExpirePasswords", "MaxPasswordAge", "PasswordReusePrevention", "HardExpiry"]
+
+# --- Task 5.4 types: Roles, User Policies, Groups, Server Certificates ---
+
+[[types]]
+shape = "ListRolesResponse"
+include_fields = ["Roles", "IsTruncated", "Marker"]
+
+[[types]]
+shape = "Role"
+include_fields = ["RoleName", "Arn", "CreateDate", "Description"]
+[types.field_overrides]
+RoleName = { required = true }
+Arn = { required = true }
+CreateDate = { required = true }
+
+[[types]]
+shape = "ListUserPoliciesResponse"
+include_fields = ["PolicyNames", "IsTruncated", "Marker"]
+
+[[types]]
+shape = "ListGroupsForUserResponse"
+include_fields = ["Groups", "IsTruncated", "Marker"]
+
+[[types]]
+shape = "Group"
+include_fields = ["GroupName", "Arn", "CreateDate"]
+[types.field_overrides]
+GroupName = { required = true }
+Arn = { required = true }
+CreateDate = { required = true }
+
+[[types]]
+shape = "ListServerCertificatesResponse"
+include_fields = ["ServerCertificateMetadataList", "IsTruncated", "Marker"]
+
+[[types]]
+shape = "ServerCertificateMetadata"
+include_fields = ["ServerCertificateName", "Arn", "Expiration", "UploadDate"]
+[types.field_overrides]
+ServerCertificateName = { required = true }
+Arn = { required = true }
+
+[[types]]
+shape = "CreateServiceLinkedRoleRequest"
+include_fields = ["AWSServiceName", "Description", "CustomSuffix"]
+[types.field_overrides]
+AWSServiceName = { required = true, serde_rename = "AWSServiceName" }
+
+[[types]]
+shape = "CreateServiceLinkedRoleResponse"
+include_fields = ["Role"]
+
+# --- GetUserPolicy + ListAttachedGroupPolicies types ---
+
+[[types]]
+shape = "GetUserPolicyResponse"
+include_fields = ["UserName", "PolicyName", "PolicyDocument"]
+[types.field_overrides]
+UserName = { required = true }
+PolicyName = { required = true }
+PolicyDocument = { required = true }
+
+[[types]]
+shape = "ListAttachedGroupPoliciesResponse"
+include_fields = ["AttachedPolicies", "IsTruncated", "Marker"]
+
+# --- Task 15.1 types: ListVirtualMfaDevices, ListPolicies, GetPolicyVersion, ListEntitiesForPolicy ---
+
+[[types]]
+shape = "ListVirtualMFADevicesResponse"
+include_fields = ["VirtualMFADevices", "IsTruncated", "Marker"]
+
+[[types]]
+shape = "VirtualMFADevice"
+include_fields = ["SerialNumber", "EnableDate", "User"]
+[types.field_overrides]
+SerialNumber = { required = true }
+
+[[types]]
+shape = "ListPoliciesResponse"
+include_fields = ["Policies", "IsTruncated", "Marker"]
+
+[[types]]
+shape = "Policy"
+include_fields = ["PolicyName", "PolicyId", "Arn", "DefaultVersionId", "IsAttachable", "CreateDate", "UpdateDate"]
+
+[[types]]
+shape = "GetPolicyVersionResponse"
+include_fields = ["PolicyVersion"]
+
+[[types]]
+shape = "PolicyVersion"
+include_fields = ["Document", "VersionId", "IsDefaultVersion", "CreateDate"]
+
+[[types]]
+shape = "ListEntitiesForPolicyResponse"
+include_fields = ["PolicyGroups", "PolicyUsers", "PolicyRoles", "IsTruncated", "Marker"]
+
+[[types]]
+shape = "PolicyGroup"
+include_fields = ["GroupName", "GroupId"]
+
+[[types]]
+shape = "PolicyUser"
+include_fields = ["UserName", "UserId"]
+
+[[types]]
+shape = "PolicyRole"
+include_fields = ["RoleName", "RoleId"]
+
+# === Operations ===
+
+# --- Existing operations ---
+
+[[operations]]
+name = "ListUsers"
+rust_name = "list_users"
+description = "Lists all IAM users in the account."
+
+[[operations]]
+name = "ListAttachedUserPolicies"
+rust_name = "list_attached_user_policies"
+description = "Lists all managed policies attached to the specified IAM user."
+
+[[operations]]
+name = "DetachUserPolicy"
+rust_name = "detach_user_policy"
+description = "Removes the specified managed policy from the specified IAM user."
+
+[[operations]]
+name = "DeleteAccessKey"
+rust_name = "delete_access_key"
+description = "Deletes the access key pair associated with the specified IAM user."
+
+# --- Task 5.2 operations: Access Keys + Credential Report ---
+
+[[operations]]
+name = "ListAccessKeys"
+rust_name = "list_access_keys"
+description = "Lists the access key IDs associated with the specified IAM user."
+
+[[operations]]
+name = "GetAccessKeyLastUsed"
+rust_name = "get_access_key_last_used"
+description = "Retrieves information about when the specified access key was last used."
+
+[[operations]]
+name = "GenerateCredentialReport"
+rust_name = "generate_credential_report"
+description = "Generates a credential report for the AWS account."
+
+[[operations]]
+name = "GetCredentialReport"
+rust_name = "get_credential_report"
+description = "Retrieves a credential report for the AWS account."
+
+[[operations]]
+name = "UpdateAccessKey"
+rust_name = "update_access_key"
+description = "Changes the status of the specified access key from Active to Inactive, or vice versa."
+
+# --- Task 5.3 operations: MFA, Login Profile, Account Summary/Password Policy ---
+
+[[operations]]
+name = "ListMFADevices"
+rust_name = "list_mfa_devices"
+description = "Lists the MFA devices for an IAM user."
+
+[[operations]]
+name = "GetLoginProfile"
+rust_name = "get_login_profile"
+description = "Retrieves the login profile for the specified IAM user."
+
+[[operations]]
+name = "GetAccountSummary"
+rust_name = "get_account_summary"
+description = "Retrieves information about IAM entity usage and IAM quotas in the AWS account."
+
+[[operations]]
+name = "GetAccountPasswordPolicy"
+rust_name = "get_account_password_policy"
+description = "Retrieves the password policy for the AWS account."
+
+[[operations]]
+name = "UpdateAccountPasswordPolicy"
+rust_name = "update_account_password_policy"
+description = "Updates the password policy settings for the AWS account."
+
+# --- Task 5.4 operations: Roles, User Policies, Groups, Server Certificates ---
+
+[[operations]]
+name = "ListRoles"
+rust_name = "list_roles"
+description = "Lists the IAM roles that have the specified path prefix."
+
+[[operations]]
+name = "ListUserPolicies"
+rust_name = "list_user_policies"
+description = "Lists the names of the inline policies embedded in the specified IAM user."
+
+[[operations]]
+name = "ListGroupsForUser"
+rust_name = "list_groups_for_user"
+description = "Lists the IAM groups that the specified IAM user belongs to."
+
+[[operations]]
+name = "ListServerCertificates"
+rust_name = "list_server_certificates"
+description = "Lists the server certificates stored in IAM."
+
+[[operations]]
+name = "DeleteUserPolicy"
+rust_name = "delete_user_policy"
+description = "Deletes the specified inline policy from the specified IAM user."
+
+[[operations]]
+name = "AttachRolePolicy"
+rust_name = "attach_role_policy"
+description = "Attaches the specified managed policy to the specified IAM role."
+
+[[operations]]
+name = "DetachRolePolicy"
+rust_name = "detach_role_policy"
+description = "Removes the specified managed policy from the specified IAM role."
+
+[[operations]]
+name = "CreateServiceLinkedRole"
+rust_name = "create_service_linked_role"
+description = "Creates an IAM role that is linked to a specific AWS service."
+
+# --- GetUserPolicy + ListAttachedGroupPolicies operations ---
+
+[[operations]]
+name = "GetUserPolicy"
+rust_name = "get_user_policy"
+description = "Retrieves the specified inline policy document embedded in the specified IAM user."
+
+[[operations]]
+name = "ListAttachedGroupPolicies"
+rust_name = "list_attached_group_policies"
+description = "Lists all managed policies that are attached to the specified IAM group."
+
+# --- Task 15.1 operations: ListVirtualMfaDevices, ListPolicies, GetPolicyVersion, ListEntitiesForPolicy ---
+
+[[operations]]
+name = "ListVirtualMFADevices"
+rust_name = "list_virtual_mfa_devices"
+description = "Lists the virtual MFA devices defined in the AWS account."
+
+[[operations]]
+name = "ListPolicies"
+rust_name = "list_policies"
+description = "Lists IAM policies, optionally filtered by scope (Local/AWS/All)."
+
+[[operations]]
+name = "GetPolicyVersion"
+rust_name = "get_policy_version"
+description = "Retrieves information about the specified version of the specified managed policy."
+
+[[operations]]
+name = "ListEntitiesForPolicy"
+rust_name = "list_entities_for_policy"
+description = "Lists all IAM users, groups, and roles that the specified managed policy is attached to."

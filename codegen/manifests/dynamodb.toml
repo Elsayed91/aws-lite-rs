@@ -1,0 +1,144 @@
+# Amazon DynamoDB manifest — JSON Target protocol
+# Botocore model: dynamodb/2012-08-10/service-2.json
+
+[api]
+name = "dynamodb"
+display_name = "Amazon DynamoDB"
+version = "v1"
+api_version = "2012-08-10"
+service_name = "dynamodb"
+wire_format = "json_target"
+rename_all = "PascalCase"
+target_prefix = "DynamoDB_20120810"
+json_version = "1.0"
+endpoint_prefix = "dynamodb"
+doc_url = "https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/"
+
+[api.client]
+accessor_name = "dynamodb"
+client_struct = "DynamodbClient"
+
+# === Types ===
+
+# --- ListTables ---
+
+[[types]]
+shape = "ListTablesInput"
+include_fields = ["ExclusiveStartTableName", "Limit"]
+
+[[types]]
+shape = "ListTablesOutput"
+include_fields = ["TableNames", "LastEvaluatedTableName"]
+
+# --- DescribeTable ---
+
+[[types]]
+shape = "DescribeTableInput"
+include_fields = ["TableName"]
+
+[[types]]
+shape = "DescribeTableOutput"
+include_fields = ["Table"]
+
+# --- UpdateTable ---
+
+[[types]]
+shape = "UpdateTableInput"
+include_fields = ["TableName", "BillingMode", "ProvisionedThroughput", "DeletionProtectionEnabled", "TableClass", "StreamSpecification"]
+
+[[types]]
+shape = "UpdateTableOutput"
+include_fields = ["TableDescription"]
+
+# --- DeleteTable ---
+
+[[types]]
+shape = "DeleteTableInput"
+include_fields = ["TableName"]
+
+[[types]]
+shape = "DeleteTableOutput"
+include_fields = ["TableDescription"]
+
+# --- Nested types ---
+
+[[types]]
+shape = "TableDescription"
+include_fields = ["TableName", "TableArn", "TableId", "TableStatus", "CreationDateTime", "ItemCount", "TableSizeBytes", "BillingModeSummary", "ProvisionedThroughput", "KeySchema", "AttributeDefinitions", "StreamSpecification", "SSEDescription", "TableClassSummary", "DeletionProtectionEnabled", "ArchivalSummary"]
+
+[types.field_overrides]
+CreationDateTime = { rust_type = "f64" }
+
+[[types]]
+shape = "BillingModeSummary"
+include_fields = ["BillingMode", "LastUpdateToPayPerRequestDateTime"]
+
+[types.field_overrides]
+LastUpdateToPayPerRequestDateTime = { rust_type = "f64" }
+
+[[types]]
+shape = "ProvisionedThroughputDescription"
+include_fields = ["ReadCapacityUnits", "WriteCapacityUnits", "NumberOfDecreasesToday", "LastIncreaseDateTime", "LastDecreaseDateTime"]
+
+[types.field_overrides]
+LastIncreaseDateTime = { rust_type = "f64" }
+LastDecreaseDateTime = { rust_type = "f64" }
+
+[[types]]
+shape = "ProvisionedThroughput"
+include_fields = ["ReadCapacityUnits", "WriteCapacityUnits"]
+
+[[types]]
+shape = "KeySchemaElement"
+include_fields = ["AttributeName", "KeyType"]
+
+[[types]]
+shape = "AttributeDefinition"
+include_fields = ["AttributeName", "AttributeType"]
+
+[[types]]
+shape = "StreamSpecification"
+include_fields = ["StreamEnabled", "StreamViewType"]
+
+[[types]]
+shape = "SSEDescription"
+include_fields = ["Status", "SSEType", "KMSMasterKeyArn", "InaccessibleEncryptionDateTime"]
+
+[types.field_overrides]
+InaccessibleEncryptionDateTime = { rust_type = "f64" }
+
+[[types]]
+shape = "TableClassSummary"
+include_fields = ["TableClass", "LastUpdateDateTime"]
+
+[types.field_overrides]
+LastUpdateDateTime = { rust_type = "f64" }
+
+[[types]]
+shape = "ArchivalSummary"
+include_fields = ["ArchivalDateTime", "ArchivalReason", "ArchivalBackupArn"]
+
+[types.field_overrides]
+ArchivalDateTime = { rust_type = "f64" }
+
+# === Operations ===
+
+[[operations]]
+name = "ListTables"
+rust_name = "list_tables"
+description = "Returns an array of table names associated with the current account and endpoint."
+
+[[operations]]
+name = "DescribeTable"
+rust_name = "describe_table"
+description = "Returns information about the table, including the current status of the table, when it was created, the primary key schema, and any indexes on the table."
+
+[[operations]]
+name = "UpdateTable"
+rust_name = "update_table"
+description = "Modifies the provisioned throughput settings, global secondary indexes, or DynamoDB Streams settings for a given table."
+
+[[operations]]
+name = "DeleteTable"
+rust_name = "delete_table"
+description = "The DeleteTable operation deletes a table and all of its items."

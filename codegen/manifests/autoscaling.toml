@@ -1,0 +1,110 @@
+# Auto Scaling manifest — Query/XML protocol
+# Botocore model: autoscaling/2011-01-01/service-2.json
+
+[api]
+name = "autoscaling"
+display_name = "Amazon Auto Scaling"
+version = "v1"
+api_version = "2011-01-01"
+service_name = "autoscaling"
+wire_format = "query_xml"
+endpoint_prefix = "autoscaling"
+doc_url = "https://docs.aws.amazon.com/autoscaling/ec2/APIReference/"
+
+[api.client]
+accessor_name = "autoscaling"
+client_struct = "AutoScalingClient"
+
+# === Types ===
+
+[[types]]
+shape = "AutoScalingGroupsType"
+rust_name = "DescribeAutoScalingGroupsResponse"
+include_fields = ["AutoScalingGroups", "NextToken"]
+
+[[types]]
+shape = "AutoScalingGroup"
+include_fields = [
+    "AutoScalingGroupName", "AutoScalingGroupARN",
+    "AvailabilityZones", "DesiredCapacity", "MinSize", "MaxSize",
+    "LaunchTemplate", "LaunchConfigurationName", "MixedInstancesPolicy",
+]
+
+[[types]]
+shape = "LaunchTemplateSpecification"
+include_fields = ["LaunchTemplateId", "LaunchTemplateName", "Version"]
+
+[[types]]
+shape = "MixedInstancesPolicy"
+include_fields = ["LaunchTemplate"]
+
+[[types]]
+shape = "LaunchTemplate"
+include_fields = ["LaunchTemplateSpecification"]
+
+[[types]]
+shape = "LaunchConfigurationsType"
+rust_name = "DescribeLaunchConfigurationsResponse"
+include_fields = ["LaunchConfigurations", "NextToken"]
+
+[[types]]
+shape = "LaunchConfiguration"
+include_fields = [
+    "LaunchConfigurationName", "ImageId", "InstanceType",
+    "SecurityGroups", "AssociatePublicIpAddress",
+]
+
+[[types]]
+shape = "AutoScalingGroupNamesType"
+rust_name = "DescribeAutoScalingGroupsRequest"
+include_fields = ["AutoScalingGroupNames", "NextToken", "MaxRecords"]
+
+[[types]]
+shape = "LaunchConfigurationNamesType"
+rust_name = "DescribeLaunchConfigurationsRequest"
+include_fields = ["LaunchConfigurationNames", "NextToken", "MaxRecords"]
+
+[[types]]
+shape = "UpdateAutoScalingGroupType"
+rust_name = "UpdateAutoScalingGroupRequest"
+include_fields = ["AutoScalingGroupName", "LaunchTemplate", "DesiredCapacity", "MinSize", "MaxSize"]
+[types.field_overrides]
+AutoScalingGroupName = { required = true }
+
+[[types]]
+shape = "StartInstanceRefreshType"
+rust_name = "StartInstanceRefreshRequest"
+include_fields = ["AutoScalingGroupName", "Strategy", "Preferences"]
+[types.field_overrides]
+AutoScalingGroupName = { required = true }
+
+[[types]]
+shape = "RefreshPreferences"
+include_fields = ["MinHealthyPercentage", "InstanceWarmup"]
+
+[[types]]
+shape = "StartInstanceRefreshAnswer"
+rust_name = "StartInstanceRefreshResponse"
+include_fields = ["InstanceRefreshId"]
+
+# === Operations ===
+
+[[operations]]
+name = "DescribeAutoScalingGroups"
+rust_name = "describe_auto_scaling_groups"
+description = "Describes one or more Auto Scaling groups."
+
+[[operations]]
+name = "DescribeLaunchConfigurations"
+rust_name = "describe_launch_configurations"
+description = "Describes one or more launch configurations."
+
+[[operations]]
+name = "UpdateAutoScalingGroup"
+rust_name = "update_auto_scaling_group"
+description = "Updates the configuration for the specified Auto Scaling group."
+
+[[operations]]
+name = "StartInstanceRefresh"
+rust_name = "start_instance_refresh"
+description = "Starts an instance refresh for the specified Auto Scaling group."

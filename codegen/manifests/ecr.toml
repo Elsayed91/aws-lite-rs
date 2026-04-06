@@ -1,0 +1,109 @@
+# Amazon ECR manifest — JSON Target protocol
+# Botocore model: ecr/2015-09-21/service-2.json
+
+[api]
+name = "ecr"
+display_name = "Amazon Elastic Container Registry"
+version = "v1"
+api_version = "2015-09-21"
+service_name = "ecr"
+wire_format = "json_target"
+target_prefix = "AmazonEC2ContainerRegistry_V20150921"
+json_version = "1.1"
+endpoint_prefix = "api.ecr"
+doc_url = "https://docs.aws.amazon.com/AmazonECR/latest/APIReference/"
+
+[api.client]
+accessor_name = "ecr"
+client_struct = "EcrClient"
+
+# === Types ===
+
+# --- DescribeRepositories ---
+
+[[types]]
+shape = "DescribeRepositoriesRequest"
+include_fields = ["registryId", "repositoryNames", "nextToken", "maxResults"]
+
+[[types]]
+shape = "DescribeRepositoriesResponse"
+include_fields = ["repositories", "nextToken"]
+
+[[types]]
+shape = "Repository"
+include_fields = ["repositoryArn", "registryId", "repositoryName", "repositoryUri", "createdAt", "imageTagMutability"]
+
+[types.field_overrides]
+createdAt = { rust_type = "f64" }
+
+# --- DescribeImages ---
+
+[[types]]
+shape = "DescribeImagesRequest"
+include_fields = ["registryId", "repositoryName", "imageIds", "nextToken", "maxResults", "filter"]
+
+[[types]]
+shape = "DescribeImagesResponse"
+include_fields = ["imageDetails", "nextToken"]
+
+[[types]]
+shape = "ImageDetail"
+include_fields = ["registryId", "repositoryName", "imageDigest", "imageTags", "imageSizeInBytes", "imagePushedAt", "imageManifestMediaType", "lastRecordedPullTime"]
+
+[types.field_overrides]
+imagePushedAt = { rust_type = "f64" }
+lastRecordedPullTime = { rust_type = "f64" }
+
+[[types]]
+shape = "DescribeImagesFilter"
+include_fields = ["tagStatus"]
+
+[[types]]
+shape = "ImageIdentifier"
+include_fields = ["imageDigest", "imageTag"]
+
+# --- PutLifecyclePolicy ---
+
+[[types]]
+shape = "PutLifecyclePolicyRequest"
+include_fields = ["registryId", "repositoryName", "lifecyclePolicyText"]
+
+[[types]]
+shape = "PutLifecyclePolicyResponse"
+include_fields = ["registryId", "repositoryName", "lifecyclePolicyText"]
+
+# --- BatchDeleteImage ---
+
+[[types]]
+shape = "BatchDeleteImageRequest"
+include_fields = ["registryId", "repositoryName", "imageIds"]
+
+[[types]]
+shape = "BatchDeleteImageResponse"
+include_fields = ["imageIds", "failures"]
+
+[[types]]
+shape = "ImageFailure"
+include_fields = ["imageId", "failureCode", "failureReason"]
+
+# === Operations ===
+
+[[operations]]
+name = "DescribeRepositories"
+rust_name = "describe_repositories"
+description = "Describes image repositories in a registry."
+
+[[operations]]
+name = "DescribeImages"
+rust_name = "describe_images"
+description = "Returns metadata about the images in a repository."
+
+[[operations]]
+name = "PutLifecyclePolicy"
+rust_name = "put_lifecycle_policy"
+description = "Creates or updates the lifecycle policy for the specified repository."
+
+[[operations]]
+name = "BatchDeleteImage"
+rust_name = "batch_delete_image"
+description = "Deletes a list of specified images within a repository."

@@ -1,0 +1,179 @@
+# CloudWatch manifest — Query/XML protocol
+# Botocore model: cloudwatch/2010-08-01/service-2.json
+
+[api]
+name = "cloudwatch"
+display_name = "Amazon CloudWatch"
+version = "v1"
+api_version = "2010-08-01"
+service_name = "monitoring"
+wire_format = "query_xml"
+endpoint_prefix = "monitoring"
+doc_url = "https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/"
+
+[api.client]
+accessor_name = "cloudwatch"
+client_struct = "CloudWatchClient"
+
+# === Types ===
+
+[[types]]
+shape = "GetMetricStatisticsOutput"
+rust_name = "GetMetricStatisticsResponse"
+include_fields = ["Label", "Datapoints"]
+
+[[types]]
+shape = "Datapoint"
+include_fields = ["Timestamp", "Average", "Sum", "Minimum", "Maximum", "SampleCount", "Unit"]
+[types.field_overrides]
+Unit = { enum_type = "StandardUnit" }
+
+[[types]]
+shape = "Dimension"
+include_fields = ["Name", "Value"]
+[types.field_overrides]
+Name = { required = true }
+Value = { required = true }
+
+[[types]]
+shape = "GetMetricStatisticsInput"
+[types.field_overrides]
+Unit = { enum_type = "StandardUnit" }
+Statistics = { enum_type = "Statistic" }
+
+# --- Task 7.1 types: ListMetrics ---
+
+[[types]]
+shape = "ListMetricsInput"
+include_fields = ["Namespace", "MetricName", "Dimensions", "NextToken"]
+
+[[types]]
+shape = "ListMetricsOutput"
+rust_name = "ListMetricsResponse"
+include_fields = ["Metrics", "NextToken"]
+
+[[types]]
+shape = "Metric"
+include_fields = ["Namespace", "MetricName", "Dimensions"]
+
+[[types]]
+shape = "DimensionFilter"
+include_fields = ["Name", "Value"]
+[types.field_overrides]
+Name = { required = true }
+
+# --- Task 7.1 types: DescribeAlarms ---
+
+[[types]]
+shape = "DescribeAlarmsInput"
+include_fields = ["AlarmNames", "AlarmNamePrefix", "StateValue", "MaxRecords", "NextToken"]
+
+[[types]]
+shape = "DescribeAlarmsOutput"
+rust_name = "DescribeAlarmsResponse"
+include_fields = ["MetricAlarms", "NextToken"]
+
+[[types]]
+shape = "MetricAlarm"
+include_fields = ["AlarmName", "AlarmArn", "AlarmDescription", "ActionsEnabled", "OKActions", "AlarmActions", "InsufficientDataActions", "StateValue", "StateReason", "MetricName", "Namespace", "Statistic", "Dimensions", "Period", "EvaluationPeriods", "DatapointsToAlarm", "Threshold", "ComparisonOperator", "TreatMissingData"]
+[types.field_overrides]
+Statistic = { enum_type = "Statistic" }
+ComparisonOperator = { enum_type = "ComparisonOperator" }
+
+# --- Task 7.1 types: PutMetricAlarm ---
+
+[[types]]
+shape = "PutMetricAlarmInput"
+include_fields = ["AlarmName", "AlarmDescription", "ActionsEnabled", "OKActions", "AlarmActions", "InsufficientDataActions", "MetricName", "Namespace", "Statistic", "Dimensions", "Period", "Unit", "EvaluationPeriods", "DatapointsToAlarm", "Threshold", "ComparisonOperator", "TreatMissingData"]
+[types.field_overrides]
+AlarmName = { required = true }
+Statistic = { enum_type = "Statistic" }
+Unit = { enum_type = "StandardUnit" }
+ComparisonOperator = { enum_type = "ComparisonOperator", required = false }
+
+# --- Task 7.1 types: DeleteAlarms ---
+
+[[types]]
+shape = "DeleteAlarmsInput"
+include_fields = ["AlarmNames"]
+[types.field_overrides]
+AlarmNames = { required = true }
+
+# --- GetMetricData types ---
+
+[[types]]
+shape = "GetMetricDataInput"
+include_fields = ["MetricDataQueries", "StartTime", "EndTime", "NextToken", "ScanBy", "MaxDatapoints", "LabelOptions"]
+[types.field_overrides]
+MetricDataQueries = { required = true }
+StartTime = { required = true }
+EndTime = { required = true }
+ScanBy = { enum_type = "ScanBy" }
+
+[[types]]
+shape = "GetMetricDataOutput"
+rust_name = "GetMetricDataResponse"
+include_fields = ["MetricDataResults", "NextToken", "Messages"]
+
+[[types]]
+shape = "MetricDataQuery"
+include_fields = ["Id", "MetricStat", "Expression", "Label", "ReturnData", "Period", "AccountId"]
+[types.field_overrides]
+Id = { required = true }
+
+[[types]]
+shape = "MetricDataResult"
+include_fields = ["Id", "Label", "Timestamps", "Values", "StatusCode", "Messages"]
+[types.field_overrides]
+StatusCode = { enum_type = "StatusCode" }
+
+[[types]]
+shape = "MetricStat"
+include_fields = ["Metric", "Period", "Stat", "Unit"]
+[types.field_overrides]
+Metric = { required = true }
+Period = { required = true }
+Stat = { required = true }
+Unit = { enum_type = "StandardUnit" }
+
+[[types]]
+shape = "LabelOptions"
+include_fields = ["Timezone"]
+
+[[types]]
+shape = "MessageData"
+include_fields = ["Code", "Value"]
+
+# === Operations ===
+
+[[operations]]
+name = "GetMetricStatistics"
+rust_name = "get_metric_statistics"
+description = "Gets statistics for the specified metric."
+
+# --- Task 7.1 operations ---
+
+[[operations]]
+name = "ListMetrics"
+rust_name = "list_metrics"
+description = "List the specified metrics."
+
+[[operations]]
+name = "DescribeAlarms"
+rust_name = "describe_alarms"
+description = "Retrieves the specified alarms."
+
+[[operations]]
+name = "PutMetricAlarm"
+rust_name = "put_metric_alarm"
+description = "Creates or updates an alarm and associates it with the specified metric."
+
+[[operations]]
+name = "DeleteAlarms"
+rust_name = "delete_alarms"
+description = "Deletes the specified alarms."
+
+[[operations]]
+name = "GetMetricData"
+rust_name = "get_metric_data"
+description = "Retrieves CloudWatch metric values for one or more metrics in a single batch request."

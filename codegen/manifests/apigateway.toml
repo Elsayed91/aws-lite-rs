@@ -1,0 +1,87 @@
+# AWS API Gateway manifest — REST-JSON protocol (path-based routing, JSON bodies)
+# Botocore model: apigateway/2015-07-09
+
+[api]
+name = "apigateway"
+display_name = "Amazon API Gateway"
+version = "v1"
+api_version = "2015-07-09"
+service_name = "apigateway"
+wire_format = "rest_json"
+endpoint_prefix = "apigateway"
+
+[api.client]
+accessor_name = "apigateway"
+client_struct = "ApigatewayClient"
+
+# === Types ===
+
+[[types]]
+shape = "GetRestApisRequest"
+include_fields = ["position", "limit"]
+
+[[types]]
+shape = "RestApis"
+include_fields = ["position", "items"]
+[types.field_overrides]
+# API Gateway response uses "item" (locationName) not "items" (memberName)
+items = { rust_type = "Vec<RestApi>", serde_rename = "item" }
+
+[[types]]
+# Note: createdDate is a Unix timestamp integer in REST-JSON responses (not a string),
+# excluded to avoid deserialization failures.
+shape = "RestApi"
+include_fields = ["id", "name", "description"]
+
+[[types]]
+shape = "GetStagesRequest"
+include_fields = ["restApiId", "deploymentId"]
+[types.field_overrides]
+restApiId = { required = true }
+
+[[types]]
+shape = "Stages"
+include_fields = ["item"]
+[types.field_overrides]
+item = { rust_type = "Vec<Stage>" }
+
+[[types]]
+# Note: createdDate and lastUpdatedDate are Unix timestamp integers in REST-JSON responses,
+# excluded to avoid deserialization failures.
+shape = "Stage"
+include_fields = ["stageName", "deploymentId", "description", "cacheClusterEnabled", "cacheClusterSize", "cacheClusterStatus", "methodSettings", "tracingEnabled"]
+[types.field_overrides]
+methodSettings = { rust_type = "std::collections::HashMap<String, MethodSetting>" }
+
+[[types]]
+shape = "MethodSetting"
+include_fields = ["metricsEnabled", "loggingLevel", "dataTraceEnabled", "throttlingBurstLimit", "throttlingRateLimit", "cachingEnabled", "cacheTtlInSeconds", "cacheDataEncrypted"]
+
+[[types]]
+shape = "UpdateStageRequest"
+include_fields = ["restApiId", "stageName", "patchOperations"]
+[types.field_overrides]
+restApiId = { required = true }
+stageName = { required = true }
+patchOperations = { rust_type = "Vec<PatchOperation>" }
+
+[[types]]
+shape = "PatchOperation"
+include_fields = ["op", "path", "value", "from"]
+
+# === Operations ===
+
+[[operations]]
+name = "GetRestApis"
+rust_name = "get_rest_apis"
+description = "Lists the RestApis resources for your collection."
+
+[[operations]]
+name = "GetStages"
+rust_name = "get_stages"
+description = "Gets information about one or more Stage resources."
+
+[[operations]]
+name = "UpdateStage"
+rust_name = "update_stage"
+description = "Changes information about a Stage resource."

@@ -1,0 +1,232 @@
+# Amazon ECS manifest — JSON Target protocol
+# Botocore model: ecs/2014-11-13/service-2.json
+
+[api]
+name = "ecs"
+display_name = "Amazon Elastic Container Service"
+version = "v1"
+api_version = "2014-11-13"
+service_name = "ecs"
+wire_format = "json_target"
+target_prefix = "AmazonEC2ContainerServiceV20141113"
+json_version = "1.1"
+endpoint_prefix = "ecs"
+doc_url = "https://docs.aws.amazon.com/AmazonECS/latest/APIReference/"
+
+[api.client]
+accessor_name = "ecs"
+client_struct = "EcsClient"
+
+# === Types ===
+
+# --- Task 13.2 types: ListClusters ---
+
+[[types]]
+shape = "ListClustersRequest"
+include_fields = ["nextToken", "maxResults"]
+
+[[types]]
+shape = "ListClustersResponse"
+include_fields = ["clusterArns", "nextToken"]
+
+# --- Task 13.2 types: DescribeClusters ---
+
+[[types]]
+shape = "DescribeClustersRequest"
+include_fields = ["clusters", "include"]
+
+[[types]]
+shape = "DescribeClustersResponse"
+include_fields = ["clusters", "failures"]
+
+[[types]]
+shape = "Cluster"
+include_fields = [
+    "clusterArn", "clusterName", "status",
+    "registeredContainerInstancesCount", "runningTasksCount",
+    "pendingTasksCount", "activeServicesCount",
+    "tags", "settings", "capacityProviders",
+]
+
+[[types]]
+shape = "KeyValuePair"
+include_fields = ["name", "value"]
+
+[[types]]
+shape = "ClusterSetting"
+include_fields = ["name", "value"]
+
+[[types]]
+shape = "Tag"
+include_fields = ["key", "value"]
+
+[[types]]
+shape = "Failure"
+include_fields = ["arn", "reason", "detail"]
+
+# --- Task 13.2 types: ListServices ---
+
+[[types]]
+shape = "ListServicesRequest"
+include_fields = ["cluster", "nextToken", "maxResults", "launchType", "schedulingStrategy"]
+
+[[types]]
+shape = "ListServicesResponse"
+include_fields = ["serviceArns", "nextToken"]
+
+# --- Task 13.2 types: DescribeServices ---
+
+[[types]]
+shape = "DescribeServicesRequest"
+include_fields = ["cluster", "services", "include"]
+
+[[types]]
+shape = "DescribeServicesResponse"
+include_fields = ["services", "failures"]
+
+[[types]]
+shape = "Service"
+include_fields = [
+    "serviceArn", "serviceName", "clusterArn",
+    "loadBalancers", "status", "desiredCount",
+    "runningCount", "pendingCount", "launchType",
+    "taskDefinition", "deployments", "events",
+    "createdAt", "platformVersion", "networkConfiguration",
+    "schedulingStrategy", "enableExecuteCommand",
+]
+[types.field_overrides]
+createdAt = { rust_type = "f64" }
+
+[[types]]
+shape = "Deployment"
+include_fields = [
+    "id", "status", "taskDefinition",
+    "desiredCount", "pendingCount", "runningCount",
+    "failedTasks", "createdAt", "updatedAt",
+    "launchType", "platformVersion", "rolloutState",
+    "rolloutStateReason",
+]
+[types.field_overrides]
+createdAt = { rust_type = "f64" }
+updatedAt = { rust_type = "f64" }
+
+[[types]]
+shape = "ServiceEvent"
+include_fields = ["id", "createdAt", "message"]
+[types.field_overrides]
+createdAt = { rust_type = "f64" }
+
+[[types]]
+shape = "LoadBalancer"
+include_fields = ["targetGroupArn", "loadBalancerName", "containerName", "containerPort"]
+
+[[types]]
+shape = "NetworkConfiguration"
+include_fields = ["awsvpcConfiguration"]
+
+[[types]]
+shape = "AwsVpcConfiguration"
+include_fields = ["subnets", "securityGroups", "assignPublicIp"]
+
+# --- Task 13.2 types: DescribeTaskDefinition ---
+
+[[types]]
+shape = "DescribeTaskDefinitionRequest"
+include_fields = ["taskDefinition", "include"]
+[types.field_overrides]
+taskDefinition = { required = true }
+
+[[types]]
+shape = "DescribeTaskDefinitionResponse"
+include_fields = ["taskDefinition", "tags"]
+
+[[types]]
+shape = "TaskDefinition"
+include_fields = [
+    "taskDefinitionArn", "containerDefinitions", "family",
+    "taskRoleArn", "executionRoleArn", "networkMode",
+    "revision", "status", "compatibilities",
+    "requiresCompatibilities", "cpu", "memory",
+    "registeredAt", "deregisteredAt",
+]
+[types.field_overrides]
+registeredAt = { rust_type = "f64" }
+deregisteredAt = { rust_type = "f64" }
+
+[[types]]
+shape = "ContainerDefinition"
+include_fields = [
+    "name", "image", "cpu", "memory", "memoryReservation",
+    "portMappings", "essential", "environment",
+    "command", "entryPoint", "logConfiguration",
+]
+
+[[types]]
+shape = "PortMapping"
+include_fields = ["containerPort", "hostPort", "protocol"]
+
+[[types]]
+shape = "LogConfiguration"
+include_fields = ["logDriver", "options"]
+
+# --- Task 13.3 types: UpdateService ---
+
+[[types]]
+shape = "UpdateServiceRequest"
+include_fields = [
+    "cluster", "service", "desiredCount", "taskDefinition",
+    "networkConfiguration", "forceNewDeployment",
+    "healthCheckGracePeriodSeconds",
+]
+[types.field_overrides]
+service = { required = true }
+
+[[types]]
+shape = "UpdateServiceResponse"
+include_fields = ["service"]
+
+# --- Task 13.3 types: DeregisterTaskDefinition ---
+
+[[types]]
+shape = "DeregisterTaskDefinitionRequest"
+include_fields = ["taskDefinition"]
+[types.field_overrides]
+taskDefinition = { required = true }
+
+[[types]]
+shape = "DeregisterTaskDefinitionResponse"
+include_fields = ["taskDefinition"]
+
+# === Operations ===
+
+# --- Task 13.2: Read operations ---
+
+[[operations]]
+name = "ListClusters"
+rust_name = "list_clusters"
+
+[[operations]]
+name = "DescribeClusters"
+rust_name = "describe_clusters"
+
+[[operations]]
+name = "ListServices"
+rust_name = "list_services"
+
+[[operations]]
+name = "DescribeServices"
+rust_name = "describe_services"
+
+[[operations]]
+name = "DescribeTaskDefinition"
+rust_name = "describe_task_definition"
+
+# --- Task 13.3: Write operations ---
+
+[[operations]]
+name = "UpdateService"
+rust_name = "update_service"
+
+[[operations]]
+name = "DeregisterTaskDefinition"
+rust_name = "deregister_task_definition"

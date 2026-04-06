@@ -1,0 +1,57 @@
+# AWS SageMaker manifest — JSON protocol with X-Amz-Target
+# Botocore model: sagemaker/2017-07-24
+
+[api]
+name = "sagemaker"
+display_name = "Amazon SageMaker"
+version = "v1"
+api_version = "2017-07-24"
+service_name = "sagemaker"
+wire_format = "json_target"
+rename_all = "PascalCase"
+target_prefix = "SageMaker"
+json_version = "1.1"
+endpoint_prefix = "api.sagemaker"
+
+[api.client]
+accessor_name = "sagemaker"
+client_struct = "SagemakerClient"
+
+# === Types ===
+
+[[types]]
+shape = "ListNotebookInstancesInput"
+include_fields = ["NextToken", "MaxResults", "SortBy", "SortOrder", "StatusEquals", "NameContains"]
+
+[[types]]
+shape = "ListNotebookInstancesOutput"
+include_fields = ["NotebookInstances", "NextToken"]
+[types.field_overrides]
+NotebookInstances = { rust_type = "Vec<NotebookInstanceSummary>" }
+
+[[types]]
+shape = "NotebookInstanceSummary"
+include_fields = ["NotebookInstanceName", "NotebookInstanceArn", "NotebookInstanceStatus", "InstanceType", "CreationTime", "LastModifiedTime", "Url"]
+[types.field_overrides]
+NotebookInstanceName = { required = true }
+NotebookInstanceArn = { required = true }
+CreationTime = { rust_type = "f64" }
+LastModifiedTime = { rust_type = "f64" }
+
+[[types]]
+shape = "StopNotebookInstanceInput"
+include_fields = ["NotebookInstanceName"]
+[types.field_overrides]
+NotebookInstanceName = { required = true }
+
+# === Operations ===
+
+[[operations]]
+name = "ListNotebookInstances"
+rust_name = "list_notebook_instances"
+description = "Returns a list of the Amazon SageMaker notebook instances in the requester's account."
+
+[[operations]]
+name = "StopNotebookInstance"
+rust_name = "stop_notebook_instance"
+description = "Terminates the ML compute instance. Before terminating the instance, SageMaker disconnects the ML storage volume from it."

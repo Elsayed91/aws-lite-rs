@@ -1,0 +1,914 @@
+# EC2 manifest — Query/XML protocol
+# Botocore model: ec2/2016-11-15/service-2.json
+
+[api]
+name = "ec2"
+display_name = "Amazon EC2"
+version = "v1"
+api_version = "2016-11-15"
+service_name = "ec2"
+wire_format = "query_xml"
+endpoint_prefix = "ec2"
+doc_url = "https://docs.aws.amazon.com/AWSEC2/latest/APIReference/"
+
+[api.client]
+accessor_name = "ec2"
+client_struct = "Ec2Client"
+
+# === Response Types ===
+
+[[types]]
+shape = "DescribeInstancesResult"
+rust_name = "DescribeInstancesResponse"
+include_fields = ["Reservations", "NextToken"]
+
+[[types]]
+shape = "Reservation"
+include_fields = ["ReservationId", "Instances"]
+
+[[types]]
+shape = "Instance"
+include_fields = [
+    "InstanceId", "InstanceType", "State", "Placement",
+    "SubnetId", "VpcId", "PublicIpAddress",
+    "BlockDeviceMappings", "SecurityGroups",
+    "LaunchTime", "ImageId", "IamInstanceProfile",
+    "Monitoring", "MetadataOptions", "EbsOptimized",
+    "VirtualizationType", "NetworkInterfaces", "Tags",
+]
+
+[[types]]
+shape = "InstanceState"
+include_fields = ["Code", "Name"]
+
+[[types]]
+shape = "Placement"
+include_fields = ["AvailabilityZone"]
+
+[[types]]
+shape = "InstanceBlockDeviceMapping"
+include_fields = ["DeviceName", "Ebs"]
+
+[[types]]
+shape = "EbsInstanceBlockDevice"
+include_fields = ["VolumeId", "Status"]
+
+[[types]]
+shape = "IamInstanceProfile"
+include_fields = ["Arn", "Id"]
+
+[[types]]
+shape = "Monitoring"
+include_fields = ["State"]
+
+[[types]]
+shape = "InstanceMetadataOptionsResponse"
+include_fields = ["HttpTokens", "HttpEndpoint"]
+
+[[types]]
+shape = "InstanceNetworkInterface"
+include_fields = ["NetworkInterfaceId"]
+
+[[types]]
+shape = "GroupIdentifier"
+include_fields = ["GroupId", "GroupName"]
+
+[[types]]
+shape = "Tag"
+include_fields = ["Key", "Value"]
+
+# --- Volumes ---
+
+[[types]]
+shape = "DescribeVolumesResult"
+rust_name = "DescribeVolumesResponse"
+include_fields = ["Volumes", "NextToken"]
+
+[[types]]
+shape = "Volume"
+include_fields = [
+    "VolumeId", "AvailabilityZone", "Size", "State", "VolumeType",
+    "Encrypted", "KmsKeyId", "CreateTime", "Iops", "Throughput",
+    "Attachments", "Tags",
+]
+
+[[types]]
+shape = "VolumeAttachment"
+include_fields = ["InstanceId", "State", "Device", "VolumeId"]
+
+# --- Snapshots ---
+
+[[types]]
+shape = "DescribeSnapshotsResult"
+rust_name = "DescribeSnapshotsResponse"
+include_fields = ["Snapshots", "NextToken"]
+
+[[types]]
+shape = "Snapshot"
+include_fields = [
+    "SnapshotId", "VolumeId", "VolumeSize", "State",
+    "StartTime", "Description", "Encrypted", "Tags",
+]
+
+[[types]]
+shape = "DescribeSnapshotAttributeResult"
+rust_name = "DescribeSnapshotAttributeResponse"
+include_fields = ["SnapshotId", "CreateVolumePermissions"]
+
+[[types]]
+shape = "CreateVolumePermission"
+include_fields = ["Group", "UserId"]
+
+# --- Images ---
+
+[[types]]
+shape = "DescribeImagesResult"
+rust_name = "DescribeImagesResponse"
+include_fields = ["Images"]
+
+[[types]]
+shape = "Image"
+include_fields = [
+    "ImageId", "Name", "State", "Public", "ImageType",
+    "PlatformDetails", "CreationDate", "Description",
+    "BlockDeviceMappings", "Tags",
+]
+
+[[types]]
+shape = "BlockDeviceMapping"
+include_fields = ["DeviceName", "Ebs"]
+
+[[types]]
+shape = "EbsBlockDevice"
+include_fields = ["SnapshotId", "VolumeSize", "VolumeType", "Encrypted"]
+
+# --- Security Groups ---
+
+[[types]]
+shape = "DescribeSecurityGroupsResult"
+rust_name = "DescribeSecurityGroupsResponse"
+include_fields = ["SecurityGroups", "NextToken"]
+
+[[types]]
+shape = "SecurityGroup"
+include_fields = [
+    "GroupId", "GroupName", "Description", "VpcId",
+    "IpPermissions", "IpPermissionsEgress", "Tags",
+]
+
+[[types]]
+shape = "IpPermission"
+include_fields = ["IpProtocol", "FromPort", "ToPort", "IpRanges", "Ipv6Ranges"]
+
+[[types]]
+shape = "IpRange"
+include_fields = ["CidrIp", "Description"]
+
+[[types]]
+shape = "Ipv6Range"
+include_fields = ["CidrIpv6", "Description"]
+
+# --- Addresses ---
+
+[[types]]
+shape = "DescribeAddressesResult"
+rust_name = "DescribeAddressesResponse"
+include_fields = ["Addresses"]
+
+[[types]]
+shape = "Address"
+include_fields = [
+    "AllocationId", "PublicIp", "InstanceId", "AssociationId",
+    "NetworkInterfaceId", "Domain",
+]
+
+# --- NAT Gateways ---
+
+[[types]]
+shape = "DescribeNatGatewaysResult"
+rust_name = "DescribeNatGatewaysResponse"
+include_fields = ["NatGateways", "NextToken"]
+
+[[types]]
+shape = "NatGateway"
+include_fields = [
+    "NatGatewayId", "State", "SubnetId", "VpcId",
+    "NatGatewayAddresses", "CreateTime",
+]
+
+[[types]]
+shape = "NatGatewayAddress"
+include_fields = ["AllocationId", "PublicIp"]
+
+# --- Route Tables ---
+
+[[types]]
+shape = "DescribeRouteTablesResult"
+rust_name = "DescribeRouteTablesResponse"
+include_fields = ["RouteTables", "NextToken"]
+
+[[types]]
+shape = "RouteTable"
+include_fields = ["RouteTableId", "VpcId", "Routes", "Associations"]
+
+[[types]]
+shape = "Route"
+include_fields = ["DestinationCidrBlock", "NatGatewayId", "GatewayId", "State"]
+
+[[types]]
+shape = "RouteTableAssociation"
+include_fields = ["SubnetId", "Main"]
+
+# --- Network ACLs ---
+
+[[types]]
+shape = "DescribeNetworkAclsResult"
+rust_name = "DescribeNetworkAclsResponse"
+include_fields = ["NetworkAcls", "NextToken"]
+
+[[types]]
+shape = "NetworkAcl"
+include_fields = ["NetworkAclId", "VpcId", "IsDefault", "Entries"]
+
+[[types]]
+shape = "NetworkAclEntry"
+include_fields = ["RuleNumber", "Protocol", "RuleAction", "Egress", "CidrBlock", "PortRange"]
+
+[[types]]
+shape = "PortRange"
+include_fields = ["From", "To"]
+
+# --- Flow Logs ---
+
+[[types]]
+shape = "DescribeFlowLogsResult"
+rust_name = "DescribeFlowLogsResponse"
+include_fields = ["FlowLogs", "NextToken"]
+
+[[types]]
+shape = "FlowLog"
+include_fields = ["FlowLogId", "ResourceId", "TrafficType", "LogGroupName", "FlowLogStatus"]
+
+# --- VPCs ---
+
+[[types]]
+shape = "DescribeVpcsResult"
+rust_name = "DescribeVpcsResponse"
+include_fields = ["Vpcs", "NextToken"]
+
+[[types]]
+shape = "Vpc"
+include_fields = ["VpcId", "CidrBlock", "State", "IsDefault"]
+
+# --- VPC Endpoints ---
+
+[[types]]
+shape = "DescribeVpcEndpointsResult"
+rust_name = "DescribeVpcEndpointsResponse"
+include_fields = ["VpcEndpoints", "NextToken"]
+
+[[types]]
+shape = "VpcEndpoint"
+include_fields = ["VpcEndpointId", "VpcId", "ServiceName", "State", "RouteTableIds", "SubnetIds"]
+
+# --- VPC Peering Connections ---
+# Needed by: aws_vpc_peering_routing (CIS 6.6) — enumerate peering connections and
+# cross-reference with route tables to verify traffic routing through peering.
+
+[[types]]
+shape = "DescribeVpcPeeringConnectionsResult"
+rust_name = "DescribeVpcPeeringConnectionsResponse"
+include_fields = ["VpcPeeringConnections", "NextToken"]
+
+[[types]]
+shape = "VpcPeeringConnection"
+include_fields = ["VpcPeeringConnectionId", "Status", "AccepterVpcInfo", "RequesterVpcInfo"]
+
+[[types]]
+shape = "VpcPeeringConnectionStateReason"
+include_fields = ["Code", "Message"]
+
+[[types]]
+shape = "VpcPeeringConnectionVpcInfo"
+include_fields = ["VpcId", "OwnerId", "CidrBlock", "Region"]
+
+# --- Launch Templates ---
+
+[[types]]
+shape = "DescribeLaunchTemplatesResult"
+rust_name = "DescribeLaunchTemplatesResponse"
+include_fields = ["LaunchTemplates", "NextToken"]
+
+[[types]]
+shape = "LaunchTemplate"
+include_fields = ["LaunchTemplateId", "LaunchTemplateName"]
+
+[[types]]
+shape = "DescribeLaunchTemplateVersionsResult"
+rust_name = "DescribeLaunchTemplateVersionsResponse"
+include_fields = ["LaunchTemplateVersions", "NextToken"]
+
+[[types]]
+shape = "LaunchTemplateVersion"
+include_fields = ["LaunchTemplateId", "LaunchTemplateName", "VersionNumber", "LaunchTemplateData"]
+
+[[types]]
+shape = "ResponseLaunchTemplateData"
+include_fields = ["ImageId", "InstanceType", "MetadataOptions", "NetworkInterfaces"]
+
+[[types]]
+shape = "LaunchTemplateInstanceMetadataOptions"
+include_fields = ["HttpTokens"]
+
+[[types]]
+shape = "LaunchTemplateInstanceNetworkInterfaceSpecification"
+include_fields = ["AssociatePublicIpAddress"]
+
+# --- Account-level ---
+
+[[types]]
+shape = "GetEbsEncryptionByDefaultResult"
+rust_name = "GetEbsEncryptionByDefaultResponse"
+include_fields = ["EbsEncryptionByDefault"]
+
+[[types]]
+shape = "EnableEbsEncryptionByDefaultResult"
+rust_name = "EnableEbsEncryptionByDefaultResponse"
+include_fields = ["EbsEncryptionByDefault"]
+
+[[types]]
+shape = "EnableSnapshotBlockPublicAccessResult"
+rust_name = "EnableSnapshotBlockPublicAccessResponse"
+include_fields = ["State"]
+
+[[types]]
+shape = "EnableImageBlockPublicAccessResult"
+rust_name = "EnableImageBlockPublicAccessResponse"
+include_fields = ["ImageBlockPublicAccessState"]
+
+# --- Write operation response types ---
+
+[[types]]
+shape = "TerminateInstancesResult"
+rust_name = "TerminateInstancesResponse"
+include_fields = ["TerminatingInstances"]
+
+[[types]]
+shape = "InstanceStateChange"
+include_fields = ["InstanceId", "CurrentState", "PreviousState"]
+
+[[types]]
+shape = "StopInstancesResult"
+rust_name = "StopInstancesResponse"
+include_fields = ["StoppingInstances"]
+
+[[types]]
+shape = "StartInstancesResult"
+rust_name = "StartInstancesResponse"
+include_fields = ["StartingInstances"]
+
+[[types]]
+shape = "ModifyInstanceMetadataOptionsResult"
+rust_name = "ModifyInstanceMetadataOptionsResponse"
+include_fields = ["InstanceId", "InstanceMetadataOptions"]
+
+[[types]]
+shape = "MonitorInstancesResult"
+rust_name = "MonitorInstancesResponse"
+include_fields = ["InstanceMonitorings"]
+
+[[types]]
+shape = "InstanceMonitoring"
+include_fields = ["InstanceId", "Monitoring"]
+
+[[types]]
+shape = "AssociateIamInstanceProfileResult"
+rust_name = "AssociateIamInstanceProfileResponse"
+include_fields = ["IamInstanceProfileAssociation"]
+
+[[types]]
+shape = "IamInstanceProfileAssociation"
+include_fields = ["AssociationId", "InstanceId", "IamInstanceProfile", "State"]
+
+[[types]]
+shape = "ModifyVolumeResult"
+rust_name = "ModifyVolumeResponse"
+include_fields = ["VolumeModification"]
+
+[[types]]
+shape = "VolumeModification"
+include_fields = ["VolumeId", "ModificationState", "TargetVolumeType", "TargetIops", "TargetThroughput"]
+
+[[types]]
+shape = "DeleteNatGatewayResult"
+rust_name = "DeleteNatGatewayResponse"
+include_fields = ["NatGatewayId"]
+
+[[types]]
+shape = "DeleteVpcEndpointsResult"
+rust_name = "DeleteVpcEndpointsResponse"
+include_fields = ["Unsuccessful"]
+
+[[types]]
+shape = "UnsuccessfulItem"
+include_fields = ["ResourceId", "Error"]
+
+[[types]]
+shape = "UnsuccessfulItemError"
+include_fields = ["Code", "Message"]
+
+[[types]]
+shape = "CreateFlowLogsResult"
+rust_name = "CreateFlowLogsResponse"
+include_fields = ["FlowLogIds", "Unsuccessful"]
+
+[[types]]
+shape = "RevokeSecurityGroupIngressResult"
+rust_name = "RevokeSecurityGroupIngressResponse"
+include_fields = ["UnknownIpPermissions"]
+
+[[types]]
+shape = "RevokeSecurityGroupEgressResult"
+rust_name = "RevokeSecurityGroupEgressResponse"
+include_fields = ["UnknownIpPermissions"]
+
+[[types]]
+shape = "AuthorizeSecurityGroupIngressResult"
+rust_name = "AuthorizeSecurityGroupIngressResponse"
+include_fields = ["SecurityGroupRules"]
+
+[[types]]
+shape = "SecurityGroupRule"
+include_fields = ["SecurityGroupRuleId", "GroupId", "IpProtocol", "FromPort", "ToPort", "CidrIpv4"]
+
+[[types]]
+shape = "DeleteSecurityGroupResult"
+rust_name = "DeleteSecurityGroupResponse"
+include_fields = ["GroupId"]
+
+[[types]]
+shape = "DeregisterImageResult"
+rust_name = "DeregisterImageResponse"
+include_fields = ["DeleteSnapshotResults"]
+
+# --- Request types (auto-generated from operations, but include for field filtering) ---
+
+[[types]]
+shape = "DescribeInstancesRequest"
+include_fields = ["InstanceIds", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeVolumesRequest"
+include_fields = ["VolumeIds", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeSnapshotsRequest"
+include_fields = ["OwnerIds", "SnapshotIds", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeImagesRequest"
+include_fields = ["Owners", "ImageIds"]
+
+[[types]]
+shape = "DescribeSecurityGroupsRequest"
+include_fields = ["GroupIds", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeAddressesRequest"
+include_fields = ["AllocationIds", "PublicIps"]
+
+[[types]]
+shape = "DescribeNatGatewaysRequest"
+include_fields = ["NatGatewayIds", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeRouteTablesRequest"
+include_fields = ["RouteTableIds", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeNetworkAclsRequest"
+include_fields = ["NetworkAclIds", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeFlowLogsRequest"
+include_fields = ["FlowLogIds", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeVpcsRequest"
+include_fields = ["VpcIds", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeVpcEndpointsRequest"
+include_fields = ["VpcEndpointIds", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeVpcPeeringConnectionsRequest"
+include_fields = ["VpcPeeringConnectionIds", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeLaunchTemplatesRequest"
+include_fields = ["LaunchTemplateIds", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeLaunchTemplateVersionsRequest"
+include_fields = ["LaunchTemplateId", "Versions", "NextToken", "MaxResults"]
+
+[[types]]
+shape = "DescribeSnapshotAttributeRequest"
+include_fields = ["SnapshotId", "Attribute"]
+[types.field_overrides]
+SnapshotId = { required = true }
+Attribute = { required = true }
+
+[[types]]
+shape = "GetEbsEncryptionByDefaultRequest"
+include_fields = []
+
+[[types]]
+shape = "TerminateInstancesRequest"
+include_fields = ["InstanceIds"]
+
+[[types]]
+shape = "StopInstancesRequest"
+include_fields = ["InstanceIds"]
+
+[[types]]
+shape = "StartInstancesRequest"
+include_fields = ["InstanceIds"]
+
+[[types]]
+shape = "ModifyInstanceAttributeRequest"
+include_fields = ["InstanceId"]
+[types.field_overrides]
+InstanceId = { required = true }
+
+[[types]]
+shape = "ModifyInstanceMetadataOptionsRequest"
+include_fields = ["InstanceId", "HttpTokens", "HttpEndpoint"]
+[types.field_overrides]
+InstanceId = { required = true }
+
+[[types]]
+shape = "MonitorInstancesRequest"
+include_fields = ["InstanceIds"]
+
+[[types]]
+shape = "AssociateIamInstanceProfileRequest"
+include_fields = ["IamInstanceProfile", "InstanceId"]
+[types.field_overrides]
+InstanceId = { required = true }
+
+[[types]]
+shape = "IamInstanceProfileSpecification"
+include_fields = ["Arn", "Name"]
+
+[[types]]
+shape = "DetachVolumeRequest"
+include_fields = ["VolumeId", "InstanceId"]
+[types.field_overrides]
+VolumeId = { required = true }
+
+[[types]]
+shape = "DeleteVolumeRequest"
+include_fields = ["VolumeId"]
+[types.field_overrides]
+VolumeId = { required = true }
+
+[[types]]
+shape = "ModifyVolumeRequest"
+include_fields = ["VolumeId", "VolumeType", "Iops", "Throughput"]
+[types.field_overrides]
+VolumeId = { required = true }
+
+[[types]]
+shape = "CreateSnapshotRequest"
+include_fields = ["VolumeId", "Description"]
+[types.field_overrides]
+VolumeId = { required = true }
+
+[[types]]
+shape = "DeleteSnapshotRequest"
+include_fields = ["SnapshotId"]
+[types.field_overrides]
+SnapshotId = { required = true }
+
+[[types]]
+shape = "ModifySnapshotAttributeRequest"
+include_fields = ["SnapshotId", "Attribute", "CreateVolumePermission"]
+[types.field_overrides]
+SnapshotId = { required = true }
+
+[[types]]
+shape = "CreateVolumePermissionModifications"
+include_fields = ["Add", "Remove"]
+
+[[types]]
+shape = "EnableSnapshotBlockPublicAccessRequest"
+include_fields = ["State"]
+[types.field_overrides]
+State = { required = true }
+
+[[types]]
+shape = "ReleaseAddressRequest"
+include_fields = ["AllocationId"]
+
+[[types]]
+shape = "DeregisterImageRequest"
+include_fields = ["ImageId"]
+[types.field_overrides]
+ImageId = { required = true }
+
+[[types]]
+shape = "ModifyImageAttributeRequest"
+include_fields = ["ImageId", "LaunchPermission"]
+[types.field_overrides]
+ImageId = { required = true }
+
+[[types]]
+shape = "LaunchPermissionModifications"
+include_fields = ["Add", "Remove"]
+
+[[types]]
+shape = "LaunchPermission"
+include_fields = ["Group", "UserId"]
+
+[[types]]
+shape = "EnableImageBlockPublicAccessRequest"
+include_fields = ["ImageBlockPublicAccessState"]
+[types.field_overrides]
+ImageBlockPublicAccessState = { required = true }
+
+[[types]]
+shape = "RevokeSecurityGroupIngressRequest"
+include_fields = ["GroupId", "IpPermissions"]
+
+[[types]]
+shape = "RevokeSecurityGroupEgressRequest"
+include_fields = ["GroupId", "IpPermissions"]
+[types.field_overrides]
+GroupId = { required = true }
+
+[[types]]
+shape = "AuthorizeSecurityGroupIngressRequest"
+include_fields = ["GroupId", "IpPermissions"]
+
+[[types]]
+shape = "DeleteSecurityGroupRequest"
+include_fields = ["GroupId"]
+
+[[types]]
+shape = "DeleteNatGatewayRequest"
+include_fields = ["NatGatewayId"]
+[types.field_overrides]
+NatGatewayId = { required = true }
+
+[[types]]
+shape = "DeleteVpcEndpointsRequest"
+include_fields = ["VpcEndpointIds"]
+
+[[types]]
+shape = "CreateFlowLogsRequest"
+include_fields = ["ResourceIds", "ResourceType", "TrafficType", "LogGroupName", "DeliverLogsPermissionArn"]
+[types.field_overrides]
+ResourceIds = { required = true }
+ResourceType = { required = true }
+TrafficType = { required = true }
+
+[[types]]
+shape = "CreateTagsRequest"
+include_fields = ["Resources", "Tags"]
+
+[[types]]
+shape = "EnableEbsEncryptionByDefaultRequest"
+include_fields = []
+
+# === Operations ===
+
+# Read ops
+[[operations]]
+name = "DescribeInstances"
+rust_name = "describe_instances"
+description = "Describes the specified instances or all instances."
+
+[[operations]]
+name = "DescribeVolumes"
+rust_name = "describe_volumes"
+description = "Describes the specified EBS volumes or all EBS volumes."
+
+[[operations]]
+name = "DescribeSnapshots"
+rust_name = "describe_snapshots"
+description = "Describes the specified EBS snapshots."
+
+[[operations]]
+name = "DescribeImages"
+rust_name = "describe_images"
+description = "Describes the specified images (AMIs)."
+
+[[operations]]
+name = "DescribeSecurityGroups"
+rust_name = "describe_security_groups"
+description = "Describes the specified security groups."
+
+[[operations]]
+name = "DescribeAddresses"
+rust_name = "describe_addresses"
+description = "Describes the specified Elastic IP addresses."
+
+[[operations]]
+name = "DescribeNatGateways"
+rust_name = "describe_nat_gateways"
+description = "Describes the specified NAT gateways."
+
+[[operations]]
+name = "DescribeRouteTables"
+rust_name = "describe_route_tables"
+description = "Describes the specified route tables."
+
+[[operations]]
+name = "DescribeNetworkAcls"
+rust_name = "describe_network_acls"
+description = "Describes the specified network ACLs."
+
+[[operations]]
+name = "DescribeFlowLogs"
+rust_name = "describe_flow_logs"
+description = "Describes the specified flow logs."
+
+[[operations]]
+name = "DescribeVpcs"
+rust_name = "describe_vpcs"
+description = "Describes the specified VPCs."
+
+[[operations]]
+name = "DescribeVpcEndpoints"
+rust_name = "describe_vpc_endpoints"
+description = "Describes the specified VPC endpoints."
+
+[[operations]]
+name = "DescribeLaunchTemplates"
+rust_name = "describe_launch_templates"
+description = "Describes the specified launch templates."
+
+[[operations]]
+name = "DescribeLaunchTemplateVersions"
+rust_name = "describe_launch_template_versions"
+description = "Describes the specified launch template versions."
+
+[[operations]]
+name = "DescribeSnapshotAttribute"
+rust_name = "describe_snapshot_attribute"
+description = "Describes the specified attribute of the specified snapshot."
+
+[[operations]]
+name = "GetEbsEncryptionByDefault"
+rust_name = "get_ebs_encryption_by_default"
+description = "Describes whether EBS encryption by default is enabled for the account."
+
+# Write ops — Instance
+[[operations]]
+name = "TerminateInstances"
+rust_name = "terminate_instances"
+description = "Shuts down the specified instances."
+
+[[operations]]
+name = "StopInstances"
+rust_name = "stop_instances"
+description = "Stops the specified instances."
+
+[[operations]]
+name = "StartInstances"
+rust_name = "start_instances"
+description = "Starts the specified instances."
+
+[[operations]]
+name = "ModifyInstanceAttribute"
+rust_name = "modify_instance_attribute"
+description = "Modifies the specified attribute of the specified instance."
+
+[[operations]]
+name = "ModifyInstanceMetadataOptions"
+rust_name = "modify_instance_metadata_options"
+description = "Modify the instance metadata parameters on a running or stopped instance."
+
+[[operations]]
+name = "MonitorInstances"
+rust_name = "monitor_instances"
+description = "Enables detailed monitoring for the specified instances."
+
+[[operations]]
+name = "AssociateIamInstanceProfile"
+rust_name = "associate_iam_instance_profile"
+description = "Associates an IAM instance profile with a running or stopped instance."
+
+# Write ops — Volume
+[[operations]]
+name = "DetachVolume"
+rust_name = "detach_volume"
+description = "Detaches an EBS volume from an instance."
+
+[[operations]]
+name = "DeleteVolume"
+rust_name = "delete_volume"
+description = "Deletes the specified EBS volume."
+
+[[operations]]
+name = "ModifyVolume"
+rust_name = "modify_volume"
+description = "Modifies the size, IOPS, throughput, or type of an EBS volume."
+
+# Write ops — Snapshot
+[[operations]]
+name = "CreateSnapshot"
+rust_name = "create_snapshot"
+description = "Creates a snapshot of an EBS volume."
+
+[[operations]]
+name = "DeleteSnapshot"
+rust_name = "delete_snapshot"
+description = "Deletes the specified snapshot."
+
+[[operations]]
+name = "ModifySnapshotAttribute"
+rust_name = "modify_snapshot_attribute"
+description = "Modifies the specified snapshot attribute."
+
+[[operations]]
+name = "EnableSnapshotBlockPublicAccess"
+rust_name = "enable_snapshot_block_public_access"
+description = "Enables the block public access for snapshots setting."
+
+# Write ops — Image
+[[operations]]
+name = "DeregisterImage"
+rust_name = "deregister_image"
+description = "Deregisters the specified AMI."
+
+[[operations]]
+name = "ModifyImageAttribute"
+rust_name = "modify_image_attribute"
+description = "Modifies the specified attribute of the specified AMI."
+
+[[operations]]
+name = "EnableImageBlockPublicAccess"
+rust_name = "enable_image_block_public_access"
+description = "Enables the block public access for AMIs setting."
+
+# Write ops — Security Group
+[[operations]]
+name = "RevokeSecurityGroupIngress"
+rust_name = "revoke_security_group_ingress"
+description = "Removes the specified inbound rules from a security group."
+
+[[operations]]
+name = "RevokeSecurityGroupEgress"
+rust_name = "revoke_security_group_egress"
+description = "Removes the specified outbound rules from a security group."
+
+[[operations]]
+name = "AuthorizeSecurityGroupIngress"
+rust_name = "authorize_security_group_ingress"
+description = "Adds the specified inbound rules to a security group."
+
+[[operations]]
+name = "DeleteSecurityGroup"
+rust_name = "delete_security_group"
+description = "Deletes the specified security group."
+
+# Write ops — Networking
+[[operations]]
+name = "ReleaseAddress"
+rust_name = "release_address"
+description = "Releases the specified Elastic IP address."
+
+[[operations]]
+name = "DeleteNatGateway"
+rust_name = "delete_nat_gateway"
+description = "Deletes the specified NAT gateway."
+
+[[operations]]
+name = "DeleteVpcEndpoints"
+rust_name = "delete_vpc_endpoints"
+description = "Deletes the specified VPC endpoints."
+
+[[operations]]
+name = "CreateFlowLogs"
+rust_name = "create_flow_logs"
+description = "Creates one or more flow logs."
+
+[[operations]]
+name = "CreateTags"
+rust_name = "create_tags"
+description = "Adds or overwrites only the specified tags for the specified resources."
+
+[[operations]]
+name = "EnableEbsEncryptionByDefault"
+rust_name = "enable_ebs_encryption_by_default"
+description = "Enables EBS encryption by default for the account."
+
+# --- Task 15.4 operations ---
+
+[[operations]]
+name = "DescribeVpcPeeringConnections"
+rust_name = "describe_vpc_peering_connections"
+description = "Describes one or more VPC peering connections."

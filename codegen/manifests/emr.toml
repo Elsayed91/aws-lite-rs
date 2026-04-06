@@ -1,0 +1,109 @@
+# AWS EMR manifest — JSON protocol with X-Amz-Target
+# Botocore model: elasticmapreduce/2009-03-31
+
+[api]
+name = "emr"
+display_name = "Amazon EMR"
+version = "v1"
+api_version = "2009-03-31"
+service_name = "elasticmapreduce"
+wire_format = "json_target"
+rename_all = "PascalCase"
+target_prefix = "ElasticMapReduce"
+json_version = "1.1"
+endpoint_prefix = "elasticmapreduce"
+
+[api.client]
+accessor_name = "emr"
+client_struct = "EmrClient"
+
+# === Types ===
+
+[[types]]
+shape = "ListClustersInput"
+include_fields = ["CreatedAfter", "CreatedBefore", "ClusterStates", "Marker"]
+[types.field_overrides]
+CreatedAfter = { rust_type = "f64" }
+CreatedBefore = { rust_type = "f64" }
+ClusterStates = { rust_type = "Vec<String>" }
+
+[[types]]
+shape = "ListClustersOutput"
+include_fields = ["Clusters", "Marker"]
+[types.field_overrides]
+Clusters = { rust_type = "Vec<ClusterSummary>" }
+
+[[types]]
+shape = "ClusterSummary"
+include_fields = ["Id", "Name", "Status", "NormalizedInstanceHours", "ClusterArn", "OutpostArn"]
+[types.field_overrides]
+Id = { required = true }
+Name = { required = true }
+Status = { rust_type = "Option<ClusterStatus>" }
+
+[[types]]
+shape = "ClusterStatus"
+include_fields = ["State", "StateChangeReason", "Timeline"]
+[types.field_overrides]
+StateChangeReason = { rust_type = "Option<ClusterStateChangeReason>" }
+Timeline = { rust_type = "Option<ClusterTimeline>" }
+
+[[types]]
+shape = "ClusterStateChangeReason"
+include_fields = ["Code", "Message"]
+
+[[types]]
+shape = "ClusterTimeline"
+include_fields = ["CreationDateTime", "ReadyDateTime", "EndDateTime"]
+[types.field_overrides]
+CreationDateTime = { rust_type = "f64" }
+ReadyDateTime = { rust_type = "f64" }
+EndDateTime = { rust_type = "f64" }
+
+[[types]]
+shape = "DescribeClusterInput"
+include_fields = ["ClusterId"]
+[types.field_overrides]
+ClusterId = { required = true }
+
+[[types]]
+shape = "DescribeClusterOutput"
+include_fields = ["Cluster"]
+[types.field_overrides]
+Cluster = { rust_type = "Option<Cluster>" }
+
+[[types]]
+shape = "Cluster"
+include_fields = ["Id", "Name", "Status", "Ec2InstanceAttributes", "ReleaseLabel", "LogUri", "AutoTerminate", "TerminationProtected", "VisibleToAllUsers", "ServiceRole", "NormalizedInstanceHours", "MasterPublicDnsName", "ClusterArn", "OutpostArn", "StepConcurrencyLevel"]
+[types.field_overrides]
+Id = { required = true }
+Name = { required = true }
+Status = { rust_type = "Option<ClusterStatus>" }
+Ec2InstanceAttributes = { rust_type = "Option<Ec2InstanceAttributes>" }
+
+[[types]]
+shape = "Ec2InstanceAttributes"
+include_fields = ["Ec2KeyName", "Ec2SubnetId", "Ec2AvailabilityZone", "IamInstanceProfile", "EmrManagedMasterSecurityGroup", "EmrManagedSlaveSecurityGroup"]
+
+[[types]]
+shape = "TerminateJobFlowsInput"
+include_fields = ["JobFlowIds"]
+[types.field_overrides]
+JobFlowIds = { required = true, rust_type = "Vec<String>" }
+
+# === Operations ===
+
+[[operations]]
+name = "ListClusters"
+rust_name = "list_clusters"
+description = "Provides the status of all clusters visible to this Amazon Web Services account."
+
+[[operations]]
+name = "DescribeCluster"
+rust_name = "describe_cluster"
+description = "Provides cluster-level details including status, hardware and software configuration, VPC settings, and so on."
+
+[[operations]]
+name = "TerminateJobFlows"
+rust_name = "terminate_job_flows"
+description = "TerminateJobFlows shuts a list of clusters (job flows) down. When a job flow is shut down, any step not yet completed is canceled and the EC2 instances on which the cluster is running are stopped."

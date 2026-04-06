@@ -1,0 +1,52 @@
+# AWS Organizations manifest — JSON protocol with X-Amz-Target
+# Botocore model: organizations/2016-11-28/service-2.json
+
+[api]
+name = "organizations"
+display_name = "AWS Organizations"
+version = "v1"
+api_version = "2016-11-28"
+service_name = "organizations"
+wire_format = "json_target"
+rename_all = "PascalCase"
+target_prefix = "AWSOrganizationsV20161128"
+json_version = "1.1"
+endpoint_prefix = "organizations"
+doc_url = "https://docs.aws.amazon.com/organizations/latest/APIReference/"
+
+[api.client]
+accessor_name = "organizations"
+client_struct = "OrganizationsClient"
+
+# === Types ===
+
+[[types]]
+shape = "OrganizationalUnit"
+include_fields = ["Id", "Arn", "Name"]
+
+[[types]]
+shape = "ListOrganizationalUnitsForParentResponse"
+include_fields = ["OrganizationalUnits", "NextToken"]
+
+[[types]]
+shape = "Account"
+include_fields = ["Id", "Arn", "Email", "Name", "Status", "JoinedMethod", "JoinedTimestamp"]
+[types.field_overrides]
+Status = { enum_type = "AccountStatus" }
+JoinedMethod = { enum_type = "AccountJoinedMethod" }
+
+[[types]]
+shape = "ListAccountsForParentResponse"
+include_fields = ["Accounts", "NextToken"]
+
+# === Operations ===
+
+[[operations]]
+name = "ListOrganizationalUnitsForParent"
+rust_name = "list_organizational_units_for_parent"
+description = "Lists the organizational units in a specified parent OU or root."
+
+[[operations]]
+name = "ListAccountsForParent"
+rust_name = "list_accounts_for_parent"
+description = "Lists the accounts in an organization that are contained by the specified parent OU or root."

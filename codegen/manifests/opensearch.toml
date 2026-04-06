@@ -1,0 +1,88 @@
+# AWS OpenSearch Service manifest — REST-JSON protocol
+# Botocore model: opensearch/2021-01-01
+
+[api]
+name = "opensearch"
+display_name = "Amazon OpenSearch Service"
+version = "v1"
+api_version = "2021-01-01"
+service_name = "es"
+wire_format = "rest_json"
+rename_all = "PascalCase"
+endpoint_prefix = "es"
+
+[api.client]
+accessor_name = "opensearch"
+client_struct = "OpensearchClient"
+
+# === Types ===
+
+[[types]]
+shape = "ListDomainNamesRequest"
+include_fields = ["EngineType"]
+[types.field_overrides]
+EngineType = { enum_type = "EngineType" }
+
+[[types]]
+shape = "ListDomainNamesResponse"
+include_fields = ["DomainNames"]
+[types.field_overrides]
+DomainNames = { rust_type = "Vec<DomainInfo>" }
+
+[[types]]
+shape = "DomainInfo"
+include_fields = ["DomainName", "EngineType"]
+[types.field_overrides]
+EngineType = { enum_type = "EngineType" }
+
+[[types]]
+shape = "EngineType"
+
+[[types]]
+shape = "DescribeDomainRequest"
+include_fields = ["DomainName"]
+[types.field_overrides]
+DomainName = { required = true }
+
+[[types]]
+shape = "DescribeDomainResponse"
+include_fields = ["DomainStatus"]
+[types.field_overrides]
+DomainStatus = { rust_type = "DomainStatus", required = true }
+
+[[types]]
+shape = "DomainStatus"
+include_fields = ["DomainId", "DomainName", "ARN", "Created", "Deleted", "Endpoint", "EndpointV2", "Processing", "EngineVersion"]
+[types.field_overrides]
+DomainId = { required = true }
+DomainName = { required = true }
+ARN = { required = true, serde_rename = "ARN" }
+
+[[types]]
+shape = "DeleteDomainRequest"
+include_fields = ["DomainName"]
+[types.field_overrides]
+DomainName = { required = true }
+
+[[types]]
+shape = "DeleteDomainResponse"
+include_fields = ["DomainStatus"]
+[types.field_overrides]
+DomainStatus = { rust_type = "DomainStatus" }
+
+# === Operations ===
+
+[[operations]]
+name = "ListDomainNames"
+rust_name = "list_domain_names"
+description = "Returns the names of all Amazon OpenSearch Service domains owned by the current user in the active Region."
+
+[[operations]]
+name = "DescribeDomain"
+rust_name = "describe_domain"
+description = "Returns domain configuration information about the specified Amazon OpenSearch Service domain."
+
+[[operations]]
+name = "DeleteDomain"
+rust_name = "delete_domain"
+description = "Deletes an Amazon OpenSearch Service domain and all of its data."

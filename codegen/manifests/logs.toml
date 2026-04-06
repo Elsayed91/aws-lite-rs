@@ -1,0 +1,120 @@
+# CloudWatch Logs manifest — JSON protocol with X-Amz-Target
+# Botocore model: logs/2014-03-28/service-2.json
+
+[api]
+name = "logs"
+display_name = "Amazon CloudWatch Logs"
+version = "v1"
+api_version = "2014-03-28"
+service_name = "logs"
+wire_format = "json_target"
+target_prefix = "Logs_20140328"
+json_version = "1.1"
+endpoint_prefix = "logs"
+doc_url = "https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/"
+
+[api.client]
+accessor_name = "logs"
+client_struct = "LogsClient"
+
+# === Types ===
+
+[[types]]
+shape = "LogGroup"
+include_fields = ["logGroupName", "arn", "creationTime", "storedBytes", "retentionInDays", "kmsKeyId", "logGroupClass", "logGroupArn"]
+[types.field_overrides]
+logGroupClass = { enum_type = "LogGroupClass" }
+
+[[types]]
+shape = "DescribeLogGroupsResponse"
+include_fields = ["logGroups", "nextToken"]
+
+[[types]]
+shape = "ListTagsForResourceResponse"
+include_fields = ["tags"]
+
+# --- Task 8.1 types: DescribeLogStreams ---
+
+[[types]]
+shape = "DescribeLogStreamsRequest"
+include_fields = ["logGroupName", "logStreamNamePrefix", "orderBy", "descending", "nextToken", "limit"]
+
+[[types]]
+shape = "DescribeLogStreamsResponse"
+include_fields = ["logStreams", "nextToken"]
+
+[[types]]
+shape = "LogStream"
+include_fields = ["logStreamName", "creationTime", "firstEventTimestamp", "lastEventTimestamp", "lastIngestionTime", "arn"]
+
+# --- Task 8.1 types: PutRetentionPolicy ---
+
+[[types]]
+shape = "PutRetentionPolicyRequest"
+include_fields = ["logGroupName", "retentionInDays"]
+[types.field_overrides]
+logGroupName = { required = true }
+retentionInDays = { required = true }
+
+# --- Task 8.1 types: DeleteLogStream ---
+
+[[types]]
+shape = "DeleteLogStreamRequest"
+include_fields = ["logGroupName", "logStreamName"]
+[types.field_overrides]
+logGroupName = { required = true }
+logStreamName = { required = true }
+
+# --- Task 15.2 types: DescribeMetricFilters ---
+
+[[types]]
+shape = "DescribeMetricFiltersResponse"
+include_fields = ["metricFilters", "nextToken"]
+
+[[types]]
+shape = "MetricFilter"
+include_fields = ["filterName", "filterPattern", "metricTransformations", "logGroupName", "creationTime"]
+
+[[types]]
+shape = "MetricTransformation"
+include_fields = ["metricName", "metricNamespace", "metricValue"]
+[types.field_overrides]
+metricName = { required = true }
+metricNamespace = { required = true }
+metricValue = { required = true }
+
+# === Operations ===
+
+[[operations]]
+name = "DescribeLogGroups"
+rust_name = "describe_log_groups"
+description = "Lists the specified log groups."
+
+[[operations]]
+name = "ListTagsForResource"
+rust_name = "list_tags_for_resource"
+description = "Displays the tags associated with a CloudWatch Logs resource."
+
+# --- Task 8.1 operations ---
+
+[[operations]]
+name = "DescribeLogStreams"
+rust_name = "describe_log_streams"
+description = "Lists the log streams for the specified log group."
+
+[[operations]]
+name = "PutRetentionPolicy"
+rust_name = "put_retention_policy"
+description = "Sets the retention of the specified log group."
+
+[[operations]]
+name = "DeleteLogStream"
+rust_name = "delete_log_stream"
+description = "Deletes the specified log stream."
+
+# --- Task 15.2 operations ---
+
+[[operations]]
+name = "DescribeMetricFilters"
+rust_name = "describe_metric_filters"
+description = "Lists the specified metric filters. You can list all of the metric filters or filter the results by log name, prefix, metric name, namespace, and dimensions."

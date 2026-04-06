@@ -1,0 +1,130 @@
+# Amazon Redshift manifest — Query/XML protocol
+# Botocore model: redshift/2012-12-01/service-2.json
+
+[api]
+name = "redshift"
+display_name = "Amazon Redshift"
+version = "v1"
+api_version = "2012-12-01"
+service_name = "redshift"
+wire_format = "query_xml"
+endpoint_prefix = "redshift"
+doc_url = "https://docs.aws.amazon.com/redshift/latest/APIReference/"
+
+[api.client]
+accessor_name = "redshift"
+client_struct = "RedshiftClient"
+
+# === Types ===
+
+# --- Task 11.2 types: DescribeClusters ---
+
+[[types]]
+shape = "DescribeClustersMessage"
+rust_name = "DescribeClustersRequest"
+include_fields = ["ClusterIdentifier", "MaxRecords", "Marker"]
+
+[[types]]
+shape = "ClustersMessage"
+rust_name = "DescribeClustersResponse"
+include_fields = ["Clusters", "Marker"]
+
+[[types]]
+shape = "Cluster"
+include_fields = [
+    "ClusterIdentifier", "NodeType", "ClusterStatus",
+    "ClusterAvailabilityStatus", "MasterUsername",
+    "Endpoint", "ClusterCreateTime",
+    "NumberOfNodes", "PubliclyAccessible", "Encrypted",
+    "VpcId", "AvailabilityZone", "PreferredMaintenanceWindow",
+    "ClusterVersion", "AllowVersionUpgrade",
+    "AutomatedSnapshotRetentionPeriod", "ManualSnapshotRetentionPeriod",
+    "KmsKeyId", "EnhancedVpcRouting", "ClusterNamespaceArn",
+    "TotalStorageCapacityInMegaBytes",
+]
+
+[[types]]
+shape = "Endpoint"
+include_fields = ["Address", "Port"]
+
+# --- Task 11.3 types: PauseCluster ---
+
+[[types]]
+shape = "PauseClusterMessage"
+rust_name = "PauseClusterRequest"
+include_fields = ["ClusterIdentifier"]
+[types.field_overrides]
+ClusterIdentifier = { required = true }
+
+[[types]]
+shape = "PauseClusterResult"
+rust_name = "PauseClusterResponse"
+include_fields = ["Cluster"]
+
+# --- Task 11.3 types: ResumeCluster ---
+
+[[types]]
+shape = "ResumeClusterMessage"
+rust_name = "ResumeClusterRequest"
+include_fields = ["ClusterIdentifier"]
+[types.field_overrides]
+ClusterIdentifier = { required = true }
+
+[[types]]
+shape = "ResumeClusterResult"
+rust_name = "ResumeClusterResponse"
+include_fields = ["Cluster"]
+
+# --- Task 11.3 types: ResizeCluster ---
+
+[[types]]
+shape = "ResizeClusterMessage"
+rust_name = "ResizeClusterRequest"
+include_fields = ["ClusterIdentifier", "ClusterType", "NodeType", "NumberOfNodes", "Classic"]
+[types.field_overrides]
+ClusterIdentifier = { required = true }
+
+[[types]]
+shape = "ResizeClusterResult"
+rust_name = "ResizeClusterResponse"
+include_fields = ["Cluster"]
+
+# --- Task 11.3 types: DeleteCluster ---
+
+[[types]]
+shape = "DeleteClusterMessage"
+rust_name = "DeleteClusterRequest"
+include_fields = ["ClusterIdentifier", "SkipFinalClusterSnapshot", "FinalClusterSnapshotIdentifier"]
+[types.field_overrides]
+ClusterIdentifier = { required = true }
+
+[[types]]
+shape = "DeleteClusterResult"
+rust_name = "DeleteClusterResponse"
+include_fields = ["Cluster"]
+
+# === Operations ===
+
+# --- Task 11.2: Read operations ---
+
+[[operations]]
+name = "DescribeClusters"
+rust_name = "describe_clusters"
+
+# --- Task 11.3: Write operations ---
+
+[[operations]]
+name = "PauseCluster"
+rust_name = "pause_cluster"
+
+[[operations]]
+name = "ResumeCluster"
+rust_name = "resume_cluster"
+
+[[operations]]
+name = "ResizeCluster"
+rust_name = "resize_cluster"
+
+[[operations]]
+name = "DeleteCluster"
+rust_name = "delete_cluster"

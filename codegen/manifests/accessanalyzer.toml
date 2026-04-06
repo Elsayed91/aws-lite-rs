@@ -1,0 +1,45 @@
+# AWS Access Analyzer manifest — REST-JSON protocol
+# Botocore model: accessanalyzer/2019-11-01
+#
+# Needed by GCP/AWS CIS benchmark checks:
+#   - CIS 2.19 (aws_iam_access_analyzer): confirm at least one ACTIVE analyzer
+#     exists per region (ACCOUNT or ORGANIZATION type).
+
+[api]
+name = "accessanalyzer"
+display_name = "AWS IAM Access Analyzer"
+version = "v1"
+api_version = "2019-11-01"
+service_name = "access-analyzer"
+wire_format = "rest_json"
+endpoint_prefix = "access-analyzer"
+doc_url = "https://docs.aws.amazon.com/access-analyzer/latest/APIReference/"
+
+[api.client]
+accessor_name = "accessanalyzer"
+client_struct = "AccessAnalyzerClient"
+
+# === Types ===
+
+[[types]]
+shape = "ListAnalyzersRequest"
+include_fields = ["nextToken", "maxResults"]
+
+[[types]]
+shape = "ListAnalyzersResponse"
+include_fields = ["analyzers", "nextToken"]
+
+[[types]]
+shape = "AnalyzerSummary"
+include_fields = ["arn", "name", "type", "status", "createdAt", "lastResourceAnalyzedAt", "lastResourceAnalyzed"]
+
+[types.field_overrides]
+arn = { required = true }
+name = { required = true }
+
+# === Operations ===
+
+[[operations]]
+name = "ListAnalyzers"
+rust_name = "list_analyzers"
+description = "Retrieves a list of analyzers."

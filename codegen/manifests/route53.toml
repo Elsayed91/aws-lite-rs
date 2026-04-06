@@ -1,0 +1,212 @@
+# Amazon Route 53 manifest — REST-XML protocol (path-based routing, XML bodies)
+# Botocore model: route53/2013-04-01
+# Global endpoint: route53.amazonaws.com (auto-detected from botocore globalEndpoint)
+
+[api]
+name = "route53"
+display_name = "Amazon Route 53"
+version = "v1"
+api_version = "2013-04-01"
+service_name = "route53"
+wire_format = "rest_xml"
+endpoint_prefix = "route53"
+xml_namespace = "https://route53.amazonaws.com/doc/2013-04-01/"
+
+[api.client]
+accessor_name = "route53"
+client_struct = "Route53Client"
+
+# === Response Types ===
+
+[[types]]
+shape = "ListHostedZonesResponse"
+include_fields = ["HostedZones", "Marker", "IsTruncated", "NextMarker", "MaxItems"]
+[types.field_overrides]
+HostedZones = { rust_type = "Vec<HostedZone>", required = true }
+Marker = { required = false }
+IsTruncated = { required = true }
+MaxItems = { required = true }
+
+[[types]]
+shape = "HostedZone"
+include_fields = ["Id", "Name", "CallerReference", "Config", "ResourceRecordSetCount"]
+[types.field_overrides]
+Id = { required = true }
+Name = { required = true }
+CallerReference = { required = true }
+
+[[types]]
+shape = "HostedZoneConfig"
+include_fields = ["Comment", "PrivateZone"]
+
+[[types]]
+shape = "ListResourceRecordSetsResponse"
+include_fields = ["ResourceRecordSets", "IsTruncated", "NextRecordName", "NextRecordType", "MaxItems"]
+[types.field_overrides]
+ResourceRecordSets = { rust_type = "Vec<ResourceRecordSet>", required = true }
+IsTruncated = { required = true }
+MaxItems = { required = true }
+
+[[types]]
+shape = "ResourceRecordSet"
+include_fields = ["Name", "Type", "TTL", "ResourceRecords", "HealthCheckId", "SetIdentifier", "Weight", "AliasTarget"]
+[types.field_overrides]
+Name = { required = true }
+Type = { enum_type = "RRType", required = false }
+ResourceRecords = { rust_type = "Vec<ResourceRecord>" }
+
+[[types]]
+shape = "RRType"
+
+[[types]]
+shape = "ResourceRecord"
+include_fields = ["Value"]
+[types.field_overrides]
+Value = { required = true }
+
+[[types]]
+shape = "AliasTarget"
+include_fields = ["HostedZoneId", "DNSName", "EvaluateTargetHealth"]
+[types.field_overrides]
+HostedZoneId = { required = true }
+DNSName = { required = true }
+EvaluateTargetHealth = { required = true }
+
+[[types]]
+shape = "ListHealthChecksResponse"
+include_fields = ["HealthChecks", "Marker", "IsTruncated", "NextMarker", "MaxItems"]
+[types.field_overrides]
+HealthChecks = { rust_type = "Vec<HealthCheck>", required = true }
+Marker = { required = false }
+IsTruncated = { required = true }
+MaxItems = { required = true }
+
+[[types]]
+shape = "HealthCheck"
+include_fields = ["Id", "CallerReference", "HealthCheckConfig", "HealthCheckVersion"]
+[types.field_overrides]
+Id = { required = true }
+CallerReference = { required = true }
+HealthCheckConfig = { rust_type = "HealthCheckConfig", required = true }
+HealthCheckVersion = { required = true }
+
+[[types]]
+shape = "HealthCheckConfig"
+include_fields = ["Type", "IPAddress", "Port", "FullyQualifiedDomainName", "ResourcePath", "RequestInterval", "FailureThreshold"]
+[types.field_overrides]
+Type = { enum_type = "HealthCheckType", required = false }
+
+[[types]]
+shape = "HealthCheckType"
+
+[[types]]
+shape = "GetHealthCheckStatusResponse"
+include_fields = ["HealthCheckObservations"]
+[types.field_overrides]
+HealthCheckObservations = { rust_type = "Vec<HealthCheckObservation>", required = true }
+
+[[types]]
+shape = "HealthCheckObservation"
+include_fields = ["Region", "IPAddress", "StatusReport"]
+
+[[types]]
+shape = "StatusReport"
+include_fields = ["Status", "CheckedTime"]
+
+[[types]]
+# CreateHealthCheck needed as fixture for integration tests
+shape = "CreateHealthCheckRequest"
+include_fields = ["CallerReference", "HealthCheckConfig"]
+[types.field_overrides]
+CallerReference = { required = true }
+HealthCheckConfig = { rust_type = "HealthCheckConfig", required = true }
+
+[[types]]
+shape = "CreateHealthCheckResponse"
+include_fields = ["HealthCheck"]
+[types.field_overrides]
+HealthCheck = { rust_type = "HealthCheck", required = true }
+
+# ChangeResourceRecordSets types
+# Note: HostedZoneId is a PATH param (sent in URL), not a body field.
+# The body only contains ChangeBatch.
+[[types]]
+shape = "ChangeResourceRecordSetsRequest"
+include_fields = ["ChangeBatch"]
+[types.field_overrides]
+ChangeBatch = { rust_type = "ChangeBatch", required = true }
+
+[[types]]
+shape = "ChangeBatch"
+include_fields = ["Comment", "Changes"]
+[types.field_overrides]
+# Note: ChangeBatch.changes is serialized via build_change_rrset_xml in api/route53.rs
+# which wraps Vec<Change> as <Changes><Change>...</Change></Changes>.
+# The generated type here uses Vec<Change> for deserialization only.
+Changes = { rust_type = "Vec<Change>", required = true }
+
+[[types]]
+shape = "Change"
+include_fields = ["Action", "ResourceRecordSet"]
+[types.field_overrides]
+Action = { enum_type = "ChangeAction", required = false }
+ResourceRecordSet = { rust_type = "ResourceRecordSet", required = true }
+
+[[types]]
+shape = "ChangeAction"
+
+[[types]]
+shape = "ChangeResourceRecordSetsResponse"
+include_fields = ["ChangeInfo"]
+[types.field_overrides]
+ChangeInfo = { rust_type = "ChangeInfo", required = true }
+
+[[types]]
+shape = "ChangeInfo"
+include_fields = ["Id", "Status", "SubmittedAt", "Comment"]
+[types.field_overrides]
+Id = { required = true }
+Status = { enum_type = "ChangeStatus", required = false }
+SubmittedAt = { required = true }
+
+[[types]]
+shape = "ChangeStatus"
+
+# DeleteHealthCheck has empty response — no type needed
+
+# === Operations ===
+
+[[operations]]
+name = "ListHostedZones"
+rust_name = "list_hosted_zones"
+description = "Retrieves a list of the public and private hosted zones associated with the current AWS account."
+
+[[operations]]
+name = "ListResourceRecordSets"
+rust_name = "list_resource_record_sets"
+description = "Lists the resource record sets in a specified hosted zone."
+
+[[operations]]
+name = "ListHealthChecks"
+rust_name = "list_health_checks"
+description = "Retrieve a list of the health checks associated with the current AWS account."
+
+[[operations]]
+name = "GetHealthCheckStatus"
+rust_name = "get_health_check_status"
+description = "Gets status of a health check based on the most recent checker observations."
+
+[[operations]]
+name = "CreateHealthCheck"
+rust_name = "create_health_check"
+description = "Creates a new health check."
+
+[[operations]]
+name = "DeleteHealthCheck"
+rust_name = "delete_health_check"
+description = "Deletes a health check."
+
+[[operations]]
+name = "ChangeResourceRecordSets"
+rust_name = "change_resource_record_sets"
+description = "Creates, changes, or deletes a resource record set."

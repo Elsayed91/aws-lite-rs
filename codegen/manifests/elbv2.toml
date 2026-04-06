@@ -1,0 +1,212 @@
+# ELB v2 (ALB/NLB) manifest — Query/XML protocol
+# Botocore model: elbv2/2015-12-01/service-2.json
+
+[api]
+name = "elbv2"
+display_name = "Elastic Load Balancing v2"
+version = "v1"
+api_version = "2015-12-01"
+service_name = "elasticloadbalancing"
+wire_format = "query_xml"
+endpoint_prefix = "elasticloadbalancing"
+doc_url = "https://docs.aws.amazon.com/elasticloadbalancing/latest/APIReference/"
+
+[api.client]
+accessor_name = "elbv2"
+client_struct = "Elbv2Client"
+
+# === Types ===
+
+# --- Task 12.2 types: DescribeLoadBalancers ---
+
+[[types]]
+shape = "DescribeLoadBalancersInput"
+rust_name = "DescribeLoadBalancersRequest"
+include_fields = ["LoadBalancerArns", "Names", "Marker", "PageSize"]
+
+[[types]]
+shape = "DescribeLoadBalancersOutput"
+rust_name = "DescribeLoadBalancersResponse"
+include_fields = ["LoadBalancers", "NextMarker"]
+
+[[types]]
+shape = "LoadBalancer"
+include_fields = [
+    "LoadBalancerArn", "DNSName", "LoadBalancerName",
+    "Scheme", "VpcId", "State", "Type",
+    "AvailabilityZones", "SecurityGroups", "IpAddressType",
+    "CreatedTime", "CanonicalHostedZoneId",
+]
+
+[[types]]
+shape = "LoadBalancerState"
+include_fields = ["Code", "Reason"]
+
+[[types]]
+shape = "AvailabilityZone"
+include_fields = ["ZoneName", "SubnetId"]
+
+# --- Task 12.2 types: DescribeTargetGroups ---
+
+[[types]]
+shape = "DescribeTargetGroupsInput"
+rust_name = "DescribeTargetGroupsRequest"
+include_fields = ["LoadBalancerArn", "TargetGroupArns", "Names", "Marker", "PageSize"]
+
+[[types]]
+shape = "DescribeTargetGroupsOutput"
+rust_name = "DescribeTargetGroupsResponse"
+include_fields = ["TargetGroups", "NextMarker"]
+
+[[types]]
+shape = "TargetGroup"
+include_fields = [
+    "TargetGroupArn", "TargetGroupName", "Protocol", "Port",
+    "VpcId", "HealthCheckProtocol", "HealthCheckPort",
+    "HealthCheckEnabled", "HealthCheckIntervalSeconds",
+    "HealthCheckTimeoutSeconds", "HealthyThresholdCount",
+    "UnhealthyThresholdCount", "HealthCheckPath",
+    "LoadBalancerArns", "TargetType",
+]
+
+# --- Task 12.2 types: DescribeTargetHealth ---
+
+[[types]]
+shape = "DescribeTargetHealthInput"
+rust_name = "DescribeTargetHealthRequest"
+include_fields = ["TargetGroupArn"]
+[types.field_overrides]
+TargetGroupArn = { required = true }
+
+[[types]]
+shape = "DescribeTargetHealthOutput"
+rust_name = "DescribeTargetHealthResponse"
+include_fields = ["TargetHealthDescriptions"]
+
+[[types]]
+shape = "TargetHealthDescription"
+include_fields = ["Target", "HealthCheckPort", "TargetHealth"]
+
+[[types]]
+shape = "TargetDescription"
+include_fields = ["Id", "Port", "AvailabilityZone"]
+[types.field_overrides]
+Id = { required = true }
+
+[[types]]
+shape = "TargetHealth"
+include_fields = ["State", "Reason", "Description"]
+
+# --- Task 12.2 types: DescribeListeners ---
+
+[[types]]
+shape = "DescribeListenersInput"
+rust_name = "DescribeListenersRequest"
+include_fields = ["LoadBalancerArn", "ListenerArns", "Marker", "PageSize"]
+
+[[types]]
+shape = "DescribeListenersOutput"
+rust_name = "DescribeListenersResponse"
+include_fields = ["Listeners", "NextMarker"]
+
+[[types]]
+shape = "Listener"
+include_fields = ["ListenerArn", "LoadBalancerArn", "Port", "Protocol", "SslPolicy"]
+
+# --- Task 12.2 types: DescribeLoadBalancerAttributes ---
+
+[[types]]
+shape = "DescribeLoadBalancerAttributesInput"
+rust_name = "DescribeLoadBalancerAttributesRequest"
+include_fields = ["LoadBalancerArn"]
+[types.field_overrides]
+LoadBalancerArn = { required = true }
+
+[[types]]
+shape = "DescribeLoadBalancerAttributesOutput"
+rust_name = "DescribeLoadBalancerAttributesResponse"
+include_fields = ["Attributes"]
+
+[[types]]
+shape = "LoadBalancerAttribute"
+include_fields = ["Key", "Value"]
+
+# --- Task 12.3 types: DeleteLoadBalancer ---
+
+[[types]]
+shape = "DeleteLoadBalancerInput"
+rust_name = "DeleteLoadBalancerRequest"
+include_fields = ["LoadBalancerArn"]
+[types.field_overrides]
+LoadBalancerArn = { required = true }
+
+[[types]]
+shape = "DeleteLoadBalancerOutput"
+rust_name = "DeleteLoadBalancerResponse"
+include_fields = []
+
+# --- Task 12.3 types: DeleteTargetGroup ---
+
+[[types]]
+shape = "DeleteTargetGroupInput"
+rust_name = "DeleteTargetGroupRequest"
+include_fields = ["TargetGroupArn"]
+[types.field_overrides]
+TargetGroupArn = { required = true }
+
+[[types]]
+shape = "DeleteTargetGroupOutput"
+rust_name = "DeleteTargetGroupResponse"
+include_fields = []
+
+# --- Task 12.3 types: ModifyLoadBalancerAttributes ---
+
+[[types]]
+shape = "ModifyLoadBalancerAttributesInput"
+rust_name = "ModifyLoadBalancerAttributesRequest"
+include_fields = ["LoadBalancerArn", "Attributes"]
+[types.field_overrides]
+LoadBalancerArn = { required = true }
+
+[[types]]
+shape = "ModifyLoadBalancerAttributesOutput"
+rust_name = "ModifyLoadBalancerAttributesResponse"
+include_fields = ["Attributes"]
+
+# === Operations ===
+
+# --- Task 12.2: Read operations ---
+
+[[operations]]
+name = "DescribeLoadBalancers"
+rust_name = "describe_load_balancers"
+
+[[operations]]
+name = "DescribeTargetGroups"
+rust_name = "describe_target_groups"
+
+[[operations]]
+name = "DescribeTargetHealth"
+rust_name = "describe_target_health"
+
+[[operations]]
+name = "DescribeListeners"
+rust_name = "describe_listeners"
+
+[[operations]]
+name = "DescribeLoadBalancerAttributes"
+rust_name = "describe_load_balancer_attributes"
+
+# --- Task 12.3: Write operations ---
+
+[[operations]]
+name = "DeleteLoadBalancer"
+rust_name = "delete_load_balancer"
+
+[[operations]]
+name = "DeleteTargetGroup"
+rust_name = "delete_target_group"
+
+[[operations]]
+name = "ModifyLoadBalancerAttributes"
+rust_name = "modify_load_balancer_attributes"

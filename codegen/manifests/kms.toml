@@ -1,0 +1,90 @@
+# AWS Key Management Service manifest — JSON protocol with X-Amz-Target
+# Botocore model: kms/2014-11-01
+
+[api]
+name = "kms"
+display_name = "AWS Key Management Service"
+version = "v1"
+api_version = "2014-11-01"
+service_name = "kms"
+wire_format = "json_target"
+rename_all = "PascalCase"
+target_prefix = "TrentService"
+json_version = "1.1"
+endpoint_prefix = "kms"
+
+[api.client]
+accessor_name = "kms"
+client_struct = "KmsClient"
+
+# === Types ===
+
+[[types]]
+shape = "ListKeysRequest"
+include_fields = ["Limit", "Marker"]
+
+[[types]]
+shape = "ListKeysResponse"
+include_fields = ["Keys", "NextMarker", "Truncated"]
+
+[[types]]
+shape = "KeyListEntry"
+include_fields = ["KeyId", "KeyArn"]
+
+[[types]]
+shape = "DescribeKeyRequest"
+include_fields = ["KeyId"]
+[types.field_overrides]
+KeyId = { required = true }
+
+[[types]]
+shape = "DescribeKeyResponse"
+include_fields = ["KeyMetadata"]
+
+[[types]]
+shape = "KeyMetadata"
+include_fields = ["KeyId", "Arn", "CreationDate", "Enabled", "Description", "KeyUsage", "KeyState", "DeletionDate", "KeyManager", "KeySpec", "MultiRegion"]
+[types.field_overrides]
+KeyId = { required = true }
+CreationDate = { rust_type = "f64" }
+DeletionDate = { rust_type = "f64" }
+
+[[types]]
+shape = "GetKeyRotationStatusRequest"
+include_fields = ["KeyId"]
+[types.field_overrides]
+KeyId = { required = true }
+
+[[types]]
+shape = "GetKeyRotationStatusResponse"
+include_fields = ["KeyRotationEnabled", "KeyId", "RotationPeriodInDays", "NextRotationDate"]
+[types.field_overrides]
+NextRotationDate = { rust_type = "f64" }
+
+[[types]]
+shape = "EnableKeyRotationRequest"
+include_fields = ["KeyId", "RotationPeriodInDays"]
+[types.field_overrides]
+KeyId = { required = true }
+
+# === Operations ===
+
+[[operations]]
+name = "ListKeys"
+rust_name = "list_keys"
+description = "Lists the key ARNs of all KMS keys in the current account and region."
+
+[[operations]]
+name = "DescribeKey"
+rust_name = "describe_key"
+description = "Provides detailed information about a KMS key."
+
+[[operations]]
+name = "GetKeyRotationStatus"
+rust_name = "get_key_rotation_status"
+description = "Gets a Boolean value that indicates whether automatic rotation of the key material is enabled for the specified KMS key."
+
+[[operations]]
+name = "EnableKeyRotation"
+rust_name = "enable_key_rotation"
+description = "Enables automatic rotation of the key material for the specified symmetric encryption KMS key."

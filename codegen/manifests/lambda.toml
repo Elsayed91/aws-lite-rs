@@ -1,0 +1,81 @@
+# AWS Lambda manifest — REST-JSON protocol (path-based routing, JSON bodies)
+# Botocore model: lambda/2015-03-31
+
+[api]
+name = "lambda"
+display_name = "AWS Lambda"
+version = "v1"
+api_version = "2015-03-31"
+service_name = "lambda"
+wire_format = "rest_json"
+rename_all = "PascalCase"
+endpoint_prefix = "lambda"
+
+[api.client]
+accessor_name = "lambda"
+client_struct = "LambdaClient"
+
+# === Types ===
+
+[[types]]
+shape = "ListFunctionsRequest"
+include_fields = ["Marker", "MaxItems"]
+
+[[types]]
+shape = "ListFunctionsResponse"
+include_fields = ["Functions", "NextMarker"]
+[types.field_overrides]
+Functions = { rust_type = "Vec<FunctionConfiguration>" }
+
+[[types]]
+shape = "FunctionConfiguration"
+include_fields = ["FunctionName", "FunctionArn", "Runtime", "Handler", "CodeSize", "Description", "Timeout", "MemorySize", "LastModified", "Environment", "VpcConfig", "Architectures"]
+[types.field_overrides]
+FunctionName = { required = true }
+FunctionArn = { required = true }
+Architectures = { rust_type = "Vec<String>" }
+Environment = { rust_type = "Option<EnvironmentResponse>" }
+VpcConfig = { rust_type = "Option<VpcConfigResponse>" }
+
+[[types]]
+shape = "EnvironmentResponse"
+include_fields = ["Variables"]
+[types.field_overrides]
+Variables = { rust_type = "std::collections::HashMap<String, String>" }
+
+[[types]]
+shape = "VpcConfigResponse"
+include_fields = ["SubnetIds", "SecurityGroupIds", "VpcId"]
+[types.field_overrides]
+SubnetIds = { rust_type = "Vec<String>" }
+SecurityGroupIds = { rust_type = "Vec<String>" }
+
+[[types]]
+shape = "GetFunctionConfigurationRequest"
+include_fields = ["FunctionName", "Qualifier"]
+[types.field_overrides]
+FunctionName = { required = true }
+
+[[types]]
+shape = "UpdateFunctionConfigurationRequest"
+include_fields = ["FunctionName", "Timeout", "MemorySize", "Runtime", "Architectures"]
+[types.field_overrides]
+FunctionName = { required = true }
+Architectures = { rust_type = "Vec<String>" }
+
+# === Operations ===
+
+[[operations]]
+name = "ListFunctions"
+rust_name = "list_functions"
+description = "Returns a list of Lambda functions, with the version-specific configuration of each."
+
+[[operations]]
+name = "GetFunctionConfiguration"
+rust_name = "get_function_configuration"
+description = "Returns the version-specific settings of a Lambda function or version."
+
+[[operations]]
+name = "UpdateFunctionConfiguration"
+rust_name = "update_function_configuration"
+description = "Modify the version-specific settings of a Lambda function."

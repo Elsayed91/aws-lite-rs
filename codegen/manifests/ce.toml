@@ -1,0 +1,73 @@
+# AWS Cost Explorer manifest — JSON protocol with X-Amz-Target
+# Botocore model: ce/2017-10-25
+
+[api]
+name = "ce"
+display_name = "AWS Cost Explorer"
+version = "v1"
+api_version = "2017-10-25"
+service_name = "ce"
+wire_format = "json_target"
+rename_all = "PascalCase"
+target_prefix = "AWSInsightsIndexService"
+json_version = "1.1"
+endpoint_prefix = "ce"
+
+[api.client]
+accessor_name = "ce"
+client_struct = "CeClient"
+
+# === Types ===
+
+[[types]]
+shape = "DateInterval"
+include_fields = ["Start", "End"]
+[types.field_overrides]
+Start = { required = true }
+End = { required = true }
+
+[[types]]
+shape = "GroupDefinition"
+include_fields = ["Type", "Key"]
+
+[[types]]
+shape = "MetricValue"
+include_fields = ["Amount", "Unit"]
+
+[[types]]
+shape = "Group"
+include_fields = ["Keys", "Metrics"]
+[types.field_overrides]
+Keys = { rust_type = "Vec<String>" }
+Metrics = { rust_type = "std::collections::HashMap<String, MetricValue>" }
+
+[[types]]
+shape = "ResultByTime"
+include_fields = ["TimePeriod", "Total", "Groups", "Estimated"]
+[types.field_overrides]
+Total = { rust_type = "std::collections::HashMap<String, MetricValue>" }
+Groups = { rust_type = "Vec<Group>" }
+Estimated = { rust_type = "bool" }
+
+[[types]]
+shape = "GetCostAndUsageRequest"
+include_fields = ["TimePeriod", "Granularity", "Metrics", "GroupBy", "NextPageToken"]
+[types.field_overrides]
+TimePeriod = { required = true }
+Granularity = { required = true }
+Metrics = { required = true, rust_type = "Vec<String>" }
+GroupBy = { rust_type = "Vec<GroupDefinition>" }
+
+[[types]]
+shape = "GetCostAndUsageResponse"
+include_fields = ["NextPageToken", "GroupDefinitions", "ResultsByTime"]
+[types.field_overrides]
+GroupDefinitions = { rust_type = "Vec<GroupDefinition>" }
+ResultsByTime = { rust_type = "Vec<ResultByTime>" }
+
+# === Operations ===
+
+[[operations]]
+name = "GetCostAndUsage"
+rust_name = "get_cost_and_usage"
+description = "Retrieves cost and usage metrics for your account."

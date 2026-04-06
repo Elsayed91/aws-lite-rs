@@ -1,0 +1,61 @@
+# AWS Security Token Service manifest — Query/XML protocol
+# Botocore model: sts/2011-06-15/service-2.json
+
+[api]
+name = "sts"
+display_name = "AWS Security Token Service"
+version = "v1"
+api_version = "2011-06-15"
+service_name = "sts"
+wire_format = "query_xml"
+endpoint_prefix = "sts"
+doc_url = "https://docs.aws.amazon.com/STS/latest/APIReference/"
+
+[api.client]
+accessor_name = "sts"
+client_struct = "StsClient"
+
+# === Types ===
+
+[[types]]
+shape = "GetCallerIdentityResponse"
+include_fields = ["UserId", "Account", "Arn"]
+
+[[types]]
+shape = "AssumeRoleResponse"
+include_fields = ["Credentials", "AssumedRoleUser"]
+
+[[types]]
+shape = "Credentials"
+include_fields = ["AccessKeyId", "SecretAccessKey", "SessionToken", "Expiration"]
+[types.field_overrides]
+AccessKeyId = { required = true }
+SecretAccessKey = { required = true }
+SessionToken = { required = true }
+Expiration = { required = true }
+
+[[types]]
+shape = "AssumedRoleUser"
+include_fields = ["AssumedRoleId", "Arn"]
+[types.field_overrides]
+AssumedRoleId = { required = true }
+Arn = { required = true }
+
+[[types]]
+shape = "AssumeRoleRequest"
+include_fields = ["RoleArn", "RoleSessionName", "ExternalId"]
+[types.field_overrides]
+RoleArn = { required = true }
+RoleSessionName = { required = true }
+
+# === Operations ===
+
+[[operations]]
+name = "GetCallerIdentity"
+rust_name = "get_caller_identity"
+description = "Returns details about the IAM user or role whose credentials are used to call the operation."
+
+[[operations]]
+name = "AssumeRole"
+rust_name = "assume_role"
+description = "Returns a set of temporary security credentials for cross-account access."
