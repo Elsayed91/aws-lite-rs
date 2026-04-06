@@ -44,13 +44,13 @@ The `AwsHttpClient` loads credentials via `AwsCredentials::from_default_chain(re
 
 ```bash
 # All unit tests + generated tests
-cargo test --lib
+cargo nextest run --lib
 
 # Single API integration tests
-cargo test --test integration config -- --ignored --test-threads=1 --nocapture
+cargo nextest run --test integration config -- --ignored --test-threads=1 --nocapture
 
 # All integration tests
-cargo test --test integration -- --ignored --test-threads=1 --nocapture
+cargo nextest run --test integration -- --ignored --test-threads=1 --nocapture
 ```
 
 ## Test Categories
