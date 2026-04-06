@@ -104,7 +104,7 @@ Test against real AWS API. Always-cleanup pattern, step-numbered `println!`, det
 
 ### Step C: Run Integration Test
 ```
-cargo test --test integration {service_name} -- --ignored --test-threads=1 --nocapture
+cargo nextest run --test integration {service_name} -- --ignored --test-threads=1 --nocapture
 ```
 Fix failures and re-run.
 
@@ -113,7 +113,7 @@ Encode proven behavior with MockClient. Every test verifies actual data — neve
 
 ### Step E: Run Full Test Suite
 ```
-cargo test --lib
+cargo nextest run --lib
 ```
 
 ### Step F: Commit
@@ -135,7 +135,7 @@ feat: add {service_name} {group_name} operations
 ```
 cargo check
 cargo clippy -- -D warnings
-cargo test --lib
+cargo nextest run --lib
 ```
 
 Report results. Fix and re-run if anything fails.
